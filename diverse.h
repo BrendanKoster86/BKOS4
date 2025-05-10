@@ -1,0 +1,6 @@
+#include "div_ellipse.h"
+#include "div_icon.h"
+#include "div_schermacties.h"
+#include "div_tijd.h"
+#include "div_status.h"
+#include "div_QR.h"
