@@ -42,14 +42,12 @@ void loop(void) {
   if (scherm_actief) {
     ts_begin();
     if (ts_touched()) {
-      // Serial.print('-');
       scherm_touched = millis();
       actieve_touch = true;
       ts_x = touch_x();
       ts_y = touch_y();
       // fillCircle(ts_x, ts_y, 10, kleur_wit);
     } else {
-      // Serial.print('.');
       actieve_touch = false;
     }
 

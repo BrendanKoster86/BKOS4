@@ -1,8 +1,7 @@
 #if HARDWARE == 2
-  #if RESOLUTIE == 2432
     void ts_begin(){
-      // digitalWrite(TS_CS, HIGH);
-      ts.begin();
+      digitalWrite(TS_CS, HIGH);
+      ts.begin(spi_ts);
     }
     
     void ts_setup(){
@@ -10,19 +9,6 @@
       ts_begin();
       ts.setRotation(2);
     }
-  #else
-    void ts_begin(){
-      digitalWrite(TS_CS, HIGH);
-      ts.begin();
-    }
-    
-    void ts_setup(){
-      // spi_ts.begin(TS_SCK, TS_MISO, TS_MOSI, TS_CS);
-      ts_begin();
-      ts.setRotation(2);
-    }
-  #endif
-
 #elif HARDWARE == 3
   void ts_begin(){
     ts.begin(spi_ts);
