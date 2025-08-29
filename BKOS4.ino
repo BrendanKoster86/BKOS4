@@ -3,10 +3,10 @@
 // Selectie gebruikte hardware (tzt kijken of dit automatisch kan)
 #define HARDWARE 2    // 0 : Raspberry pi pico (2) + ESP8266 s01
                       // 1 : Raspberry pi pico (2)W
-                      // 2 : ESP32-2432s028r (CYD, Cheap Yellow Display)
-                      // 3 : ESP32 VROOM     (38 pin versie)
+                      // 2 : ESP32-2432s028r (CYD, Cheap Yellow Display), kies "ESP32 WROOM DA Module"
+                      // 3 : ESP32 VROOM     (38 pin versie) 
                       // 4 : ESP32-8048S043C_I  (4,3 inch versie van de CYD), Kies "ESP32S3 Dev Module" als MCU
-                      // 5 : ESP32-8048S070C_I  (4,3 inch versie van de CYD), Kies "ESP32S3 Dev Module" als MCU
+                      // 5 : ESP32-8048S070C_I  (7,0 inch versie van de CYD), Kies "ESP32S3 Dev Module" als MCU
 
 // #define scherm_ili 9341  //  9341  of  9488
 #define RESOLUTIE 2432   //  2432  of  3248 4880
@@ -27,9 +27,6 @@ void setup() {
   tft_setup();
   
   tft.fillScreen(kleur_zwart);
-  // sd_setup();
-  ts_setup();
-
 
   BKOS_boot();
   digitalWrite(TFT_BL, HIGH);
@@ -39,6 +36,9 @@ void setup() {
 
 
 void loop(void) {
+  if ((io_gecheckt + (io_timer)) < millis()) {
+    io();
+  }
   if (scherm_actief) {
     ts_begin();
     if (ts_touched()) {

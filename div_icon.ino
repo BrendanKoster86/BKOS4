@@ -1,3 +1,36 @@
+void drawIcon(int32_t x, int32_t y, int breedte, uint32_t kleur, byte icon_to_draw[250], int num_instructions) {
+  int k = 0;
+  int r = 0;
+  int32_t _x = scherm_x(x);
+  int32_t _y = scherm_y(y);
+  bool teken = false;
+  int f = 1;
+  for (int i = 1; i < 10; i++) {
+    
+    if ((scherm_x(1) >= i) && (scherm_y(1) >= i)){
+      f = i;
+    }
+  }
+  
+  for (int i = 0; i < num_instructions; i ++) {
+    if (teken) {
+      if (icon_to_draw[i] > 0) {
+        for (int ln = 0; ln < f; ln++)
+          tft.drawLine(_x+(k*f), _y+r+ln, _x+((k+icon_to_draw[i])*f), _y+r+ln, kleur);
+      }
+      teken = false;
+    } else {
+      teken = true;
+    }
+    k += icon_to_draw[i];
+    if (k >= breedte) {
+      r += f;
+      k = 0;
+    }
+  }
+
+}
+
 void drawIcon10x10(int x, int y, String icon[10], uint16_t kleur, int factor) {
   for (byte fx = 1; fx <= factor; fx++) {
     for (int i = 0; i < 10; i++) {

@@ -7,7 +7,7 @@
 #include "instellingen.h"
 #include "apps.h"
 
-#define BKOS_VERSIE "4.TEST"
+#define BKOS_VERSIE "4.T250827"
 
 void BKOS_boot();
 

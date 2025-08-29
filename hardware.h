@@ -3,7 +3,11 @@
 
   #define PI_PICO
 
-  #define DP_DRIVER 2  // Display driver  1 = ILI9341, 2 = TFT_eSPI
+  #if RESOLUTIE == 2432
+    #define DP_DRIVER 1  // Display driver  1 = ILI9341, 2 = TFT_eSPI, 3 = GFX (not niet helemaal geschikt voor deze configuratie)
+  #else
+    #define DP_DRIVER 2  // Display driver  1 = ILI9341, 2 = TFT_eSPI, 3 = GFX (not niet helemaal geschikt voor deze configuratie)
+  #endif
   #define TS_DRIVER 1  // Touch driver    1 = XPT2046, 2 = URTouch
   #define IO_METHODE 1 // IO aansluiting  1 = direct,  2 = via module
 
@@ -14,7 +18,11 @@
   #define PI_PICO
   #define PI_PICO_W
 
-  #define DP_DRIVER 2  // Display driver  1 = ILI9341, 2 = TFT_eSPI
+  #if RESOLUTIE == 2432
+    #define DP_DRIVER 1  // Display driver  1 = ILI9341, 2 = TFT_eSPI, 3 = GFX (not niet helemaal geschikt voor deze configuratie)
+  #else
+    #define DP_DRIVER 2  // Display driver  1 = ILI9341, 2 = TFT_eSPI, 3 = GFX (not niet helemaal geschikt voor deze configuratie)
+  #endif
   #define TS_DRIVER 1  // Touch driver    1 = XPT2046, 2 = URTouch
   #define IO_METHODE 1 // IO aansluiting  1 = direct,  2 = via module
   
@@ -23,7 +31,7 @@
   #define CYD
   #define MCU_TYPE "ESP32-2432* (CYD)"
 
-  #define DP_DRIVER 1  // Display driver  1 = ILI9341, 2 = TFT_eSPI
+  #define DP_DRIVER 2  // Display driver  1 = ILI9341, 2 = TFT_eSPI
   #define TS_DRIVER 1  // Touch driver    1 = XPT2046, 2 = URTouch
   #define IO_METHODE 2 // IO aansluiting  1 = direct,  2 = via module
 
@@ -66,6 +74,8 @@
   #elif ORIENTATIE == 0
     #define ROTATIE 0
   #endif
+#elif HARDWARE == 2
+  #define ROTATIE 0
 #else
   #define ROTATIE 0
 #endif
@@ -75,5 +85,5 @@
 #include "hw_scherm.h"
 #include "hw_touch.h"
 #include "hw_sd.h"
-
+#include "hw_io.h"
 

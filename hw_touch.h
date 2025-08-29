@@ -26,9 +26,7 @@ int ts_y;
 
   
   XPT2046_Touchscreen ts(TS_CS, TS_IRQ);
-  #if RESOLUTIE == 2432
-    SPIClass spi_ts = SPIClass(VSPI);
-  #endif
+  SPIClass spi_ts = SPIClass(VSPI);
 
 #elif HARDWARE == 3
   #define TS_IRQ  21
@@ -77,5 +75,6 @@ int ycorrectie = 3962;
 
 void ts_begin();
 void ts_setup();
+bool ts_touched();
 int touch_x();
 int touch_y();

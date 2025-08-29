@@ -60,11 +60,6 @@ long millis_wekker(int H, int M) {
   // Tijd aanroepen zodat ook de tijdzone wordt gecorrigeerd
   tijd();
 
-  // Serial.print("Huidige tijd : ");
-  // Serial.println(String(uur) + ":" + String(minuut) + ":" + String(seconde));
-  // Serial.print("Wekker tijd : ");
-  // Serial.println(String(H) + ":" + String(M));
-
   // Tijd bepalen tot de triger sinds de laatste meting
   int sec = 60 - seconde;
   int min = 60 - minuut + M - 1; // Oorspronkelijk nog -1, maar omdat het bericht nu 1 minuut te vroeg verstuurd werd deze verwijderd.
@@ -82,9 +77,6 @@ long millis_wekker(int H, int M) {
   while (hr >= 24) {
     hr -= 24;
   }
-
-  // Serial.println("Te verstrijken tijd:");
-  // Serial.println("uur : "+ String(hr) + ", minuten : " + String(min) + ", seconde : " + String(sec));
 
   // Omzetten in te verstrijken milli seconden
   return tijd_millis + (hr * 3600000) + (min * 60000) + (sec * 1000);

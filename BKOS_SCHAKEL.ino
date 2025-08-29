@@ -1,5 +1,6 @@
 void schakelscherm(String actie) {
   if (actie == "bouw") {
+    // Serial.println("Bouw");
     bouw_schakelscherm();
   } else if (actie == "run") {
     run_schakelscherm();
@@ -43,12 +44,14 @@ void bouw_schakelscherm() {
   } else {
     aantal_knoppen = 10;
   }
+  
   delete[]knoppen_positie;
   delete[]knoppen_teken_positie;
   delete[]knoppen_tekst;
   delete[]knoppen_basiskleur;
   delete[]knoppen_tekst_kleur;
   delete[]knoppen_status;
+
   
   knoppen_positie = new int*[aantal_knoppen];
   knoppen_teken_positie = new int*[aantal_knoppen];
@@ -56,12 +59,13 @@ void bouw_schakelscherm() {
   knoppen_basiskleur = new uint16_t*[aantal_knoppen];
   knoppen_tekst_kleur = new uint16_t*[aantal_knoppen];
   knoppen_status = new byte[aantal_knoppen];
+
   
   for (int i  = 0 ; i < aantal_knoppen ; i++) {
     knoppen_positie[i] = schakelscherm_knoppen_positie[i];
     knoppen_teken_positie[i] = schakelscherm_knoppen_positie[i];
     knoppen_tekst[i] = io_namen[io_knoppen[i]];
-    // knoppen_status[i] = io_output_status(io_output[io_knoppen[i]]);
+    knoppen_status[i] = io_output_status(io_output[io_knoppen[i]]);
     knoppen_basiskleur[i] = schakelscherm_knoppen_kleur;
     knoppen_tekst_kleur[i] = schakelscherm_knoppen_tekst_kleur;
     
@@ -96,7 +100,7 @@ void run_schakelscherm() {
     druk = klik(x, y);
 
     if (druk > -1){
-      // io_schakel(druk);
+      io_schakel(druk);
       io_wijziging = true;
     }
 

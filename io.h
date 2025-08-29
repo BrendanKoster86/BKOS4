@@ -1,5 +1,9 @@
 void io();
 void io_reset_alert();
+void io_set_defaults();
+void io_schakel(int);
+void oi_boot();
+int io_output_status(byte);
 
 int io_cnt;
 int io_knoppen_cnt;
@@ -37,3 +41,31 @@ String* io_ruimtes_namen;  // Namen van de ruimten
 byte*** io_ruimtes;        // Coordinaten van de ruimten {{cnt}, {x,y}, {x,y}, {x,y}, {x,y}}
 
 String io_handleiding[6];
+
+
+// /* STANDAARD WAARDEN
+//  *
+//  * De volgende parameters zijn enkel de standaard waarden
+//  * Dit wordt gebruikt zolang de SD kaartlezer niet in gebruik is
+//  * En mogelijk ook later
+//  */
+
+// *io_objecten[] = {3, 3, 3, 3, 0, 0, 0, 0,
+//                0, 0, 0, 0, 0, 0, 0, 0,
+//                3, 3, 3, 0, 3, 0, 3, 3};
+
+// *io_input[]    = {0, 0, 0, 0, 0, 0, 0, 0,
+//                0, 0, 0, 0, 0, 0, 0, 0,
+//                0, 0, 0, 0, 0, 0, 0, 0};
+
+// *io_namen    = {"USB       ", "230V      ", "?         ", "?         ", "?         ", "?         ", "?         ", "?         ",
+//               "?         ", "?         ", "?         ", "?         ", "?         ", "?         ", "?         ", "?         ",
+//               "USB       ", "230V      ", "?         ", "?         ", "?         ", "?         ", "?         ", "?         "};
+
+// *io_gewijzigd = {0, 0, 0, 0, 0, 0, 0, 0,
+//                0, 0, 0, 0, 0, 0, 0, 0,
+//                0, 0, 0, 0, 0, 0, 0, 0};
+
+// *io_alert    = {0, 0, 0, 0, 0, 0, 0, 0,
+//                0, 0, 0, 0, 0, 0, 0, 0,
+//                0, 0, 0, 0, 0, 0, 0, 0};

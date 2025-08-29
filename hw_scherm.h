@@ -52,7 +52,7 @@
 #elif HARDWARE == 5
   #include <Arduino_GFX_Library.h>
 
-  #define GFX_DEV_DEVICE ESP32_8048S043
+  #define GFX_DEV_DEVICE ESP32_8048S070  // was 43
   #define TFT_BL 2
   #define RGB_PANEL
   Arduino_ESP32RGBPanel *rgbpanel = new Arduino_ESP32RGBPanel(
@@ -73,10 +73,17 @@
 #if RESOLUTIE == 2432
   #define ILI9341_DRIVER
 
+  // # if HARDWARE == 2
+  //   #define SX_MIN    0
+  //   #define SX_MAX  320
+  //   #define SY_MIN    0
+  //   #define SY_MAX  240
+  // #else
   #define SX_MIN    0
   #define SX_MAX  240
   #define SY_MIN    0
   #define SY_MAX  320
+  // #endif
 
 #elif RESOLUTIE == 3248
   #define ILI9488_DRIVER
@@ -108,18 +115,21 @@
   #include <TFT_eSPI.h>
   TFT_eSPI tft = TFT_eSPI(SX_MAX, SY_MAX);
 
-  // #if RESOLUTIE == 2432
-  //   #define ILI9341_2_DRIVER
-  // #else
-  //   #define ILI9488_DRIVER
-  // #endif
+#elif DP_DRIVER == 3
+  #if !defined(GFX_DEV_DEVICE)
+    #include <Arduino_GFX_Library.h>
+    #if defined(ESP32)
+      Arduino_DataBus *bus = new Arduino_ESP32SPI(TFT_DC, TFT_CS, TFT_SCK, TFT_MOSI);
+    #elif defined(PI_PICO)
+      Arduino_DataBus *bus = new Arduino_RPiPicoSPI(TFT_DC, TFT_CS, TFT_SCK, TFT_MOSI);
+    #endif
 
-  // #if HARDWARE == 1
-
-  //   #include <TFT_eSPI.h>
-  //   TFT_eSPI tft = TFT_eSPI(SX_MAX, SY_MAX);
-  
-  // #endif
+    // #if RESOLUTIE == 3248
+    //   Arduino_GFX *tft = new Arduino_ILI9488(bus, TFT_RST, 0, false);
+    // #else
+    Arduino_GFX tft = Arduino_ILI9341(bus, TFT_RST, 0, false);
+    // #endif
+  #endif
 
 #endif
 

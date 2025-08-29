@@ -13,7 +13,7 @@
   #define SD_MOSI 23
   #define SD_CS    5
 
-  // SPIClass spi_sd = SPIClass(VSPI);
+  SPIClass spi_sd = SPIClass(VSPI);
 
 #elif HARDWARE == 3
   #define SD_SCK  14
@@ -37,3 +37,4 @@
 
 bool sd_begin();
 void sd_setup();
+void sd_lees();

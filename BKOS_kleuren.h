@@ -6,6 +6,7 @@ uint16_t kleur_licht = kleur_beige;
 
 uint16_t kleur_zwart = tft.color565(0,0,0);
 uint16_t kleur_wit = tft.color565(255,255,255);
+uint16_t kleur_grijs = tft.color565(100,100,100);
 uint16_t kleur_geel = tft.color565(200, 255, 0);
 uint16_t kleur_oranje = tft.color565(255, 200, 0);
 uint16_t kleur_rood = tft.color565(200, 0, 0);

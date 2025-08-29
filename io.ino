@@ -37,6 +37,12 @@ String io_code_naar_naam(byte code){
    * Er moet nog wat getest worden of het handig is om de standaard Serial.print() te gebruiken, of dat er beter een ander kanaal kan worden gebruikt.
    * Op het momnt heeft het eerste mijn voorkeur mocht dat lukken.
    */
+
+  void io_boot() {
+    // io_detect();
+    Serial.print("AT+MODUS=n");
+  }
+
   void io_detect() {
     /* Deze functie zorgt er vopor dat wordt gedetecteerd welke externe hardware overal is aangesloten.
      * Dit is een vrij complexe taak en zal zonder meer veel tweaken vragen.
@@ -81,9 +87,10 @@ String io_code_naar_naam(byte code){
     unsigned long laatste = millis();
     delay(100);
     // Start maken in communiceren met de Seriele module door het versie nummer op te vragen.
-    // De verwachte response is een 'V' gevolgd door de versie aanduiding welk niet gespecificeerd is als 1 println statement.
+    // De verwachte response is een 'V' gevolgd door de versie aanduiding welk niet gespecificeerd is als 1 println statement.'
+    Serial.print("AT+MODUS=d");
     Serial.println("");
-    Serial.println("IOV");
+    // Serial.println("IOV");
     while ((!Serial.available() > 0) && (laatste + timeout > millis())) {
       delay(50);
     }
@@ -186,9 +193,109 @@ String io_code_naar_naam(byte code){
 
   void io() {
     Serial.println("");
-    Serial.print("IO");
-    
+    delay(10);
+    // Serial.print("IO");
+    char invoer;
+    bool tmp_status;
+    int i_uit;
+    int i_in;
 
+    // // TIJDELIJK VOOR DEBUGEN
+    // fillRect(0, 0, 200, 60, kleur_zwart);
+    // tft.setTextSize(1);
+    // tft.setTextColor(kleur_wit);
+    // tft.setCursor(20, 10);
+    // tft.print("IO: ");
+
+    while (Serial.available()){
+      // Leeg maken van oude communicatie
+      invoer = Serial.read();
+      // tft.print(invoer);
+    }
+    // tft.print(" -- ");
+
+    if (!io_actief){
+      io_actief = true;
+      for (int i = 0 ; i < io_cnt ; i++) {
+          
+        i_uit = io_cnt - (i+1);
+        i_in = i;
+        // tft.print(i);
+        // tft.print('[');
+
+        if ((io_output[i_uit] == 1) || (io_output[i_uit] == 2) || (io_output[i_uit] == 5)) { // 1 = aan, 2 = inv. uit, 5 = inv geblokkeerd
+          Serial.print('1');
+          // tft.print('1');
+        } else { // 0 = uit, 3 = inv aan, 4 = geblokkeerd
+          Serial.print('0');
+          // tft.print('0');
+        }
+        delay(25);
+        invoer = ' ';
+        int r = 1;
+        bool draaien = true;
+        bool antwoord = false;
+        while (draaien) {
+          if (Serial.available()) {
+            invoer = Serial.read();
+            if ((invoer == '0') || (invoer == '1')){
+              draaien = false;
+              antwoord = true;
+            } else {
+              // tft.print(invoer);
+              delay(5);
+            }
+          } else {
+            // tft.print('.');
+            delay(5*r);
+          }
+          r++;
+          if (r >= 20) {
+            if (!antwoord){
+              if (Serial.available()){
+                invoer = Serial.read();
+                draaien = false;
+                antwoord = true;
+              }
+            }
+          }
+        }
+        
+        if (antwoord){
+          // invoer = Serial.read();
+          // // DEBUG
+          // tft.print(invoer);
+          if (invoer == '1') {
+            tmp_status = true;
+          } else if (invoer == '0') {
+            tmp_status = false;
+          } else {
+            tmp_status = false;
+            // tft.print("!");
+            while (Serial.available()){
+              invoer = Serial.read();
+              tft.print(invoer);
+            }
+          }
+          // Controleren of de invoer is gewijzigd. Dit wel in de gewone volgorde omdat dit binnen komend signaal is.
+          if (tmp_status != io_input[i_in]) {
+            // Bij een wijziging vaststellen dat deze is gewijzigd en ook de aanpassing opslaan
+            io_gewijzigd[i_in] = true;
+            io_input[i_in] = tmp_status;
+            // io_meeschakelen(i_in);
+          }
+        } else {
+          // DEBUG
+          // tft.print('?');
+        }
+        // tft.print(']');
+      }
+      delay(10);
+      Serial.println("");
+      
+      io_gecheckt = millis();
+      io_actief = false;
+    }
   }
 
   void io_reset_alert(){
@@ -199,6 +306,15 @@ String io_code_naar_naam(byte code){
   /* Wanneer er eigen hardware wordt gebruikt is mijn 10 pins seriele poort wel beschikbaar.
    * Dan kan er gelijk gebruik worden gemaakt van de standaard communicatie wat veel enorm vereenvoudigd.
    */
+  
+  void io_boot() {
+    pinMode(HC_PCK, OUTPUT);
+    pinMode(HC_SCK, OUTPUT);
+    pinMode(HC_IN, INPUT);
+    pinMode(HC_UIT, OUTPUT);
+    pinMode(HC_ID, INPUT);
+  }
+  
   void io_detect() {
     /* Deze functie zorgt er vopor dat wordt gedetecteerd welke externe hardware overal is aangesloten.
      * Dit is een vrij complexe taak en zal zonder meer veel tweaken vragen.
@@ -229,6 +345,67 @@ String io_code_naar_naam(byte code){
 
   void io() {
 
+    if (io_actief == false) {
+
+      io_actief = true;
+  
+      bool tmp_status;
+      int i_uit;
+      int i_in;
+      // int i_in_ = 0;
+      // int i_in__ = -1;
+    
+      // Paralelle klokslag geven
+      digitalWrite(HC_PCK, LOW);
+      delay(10);
+      digitalWrite(HC_PCK, HIGH);
+      // delay(10);
+        
+      // digitalWrite(HC_ID, LOW);
+    
+      // Nu het paralelle gedeelte geklokt heeft de data serieel uitsturen en uitlezen
+      for (int i = 0 ; i < io_cnt ; i++) {
+    
+        // Seriele klok laag
+        digitalWrite(HC_SCK, LOW);
+        delay(1);
+        
+        i_uit = io_cnt - (i+1);
+        i_in = i;
+        
+        // Gewenste object zenden (in omgekeerde volgorde)
+        if ((io_output[i_uit] == 1) || (io_output[i_uit] == 2) || (io_output[i_uit] == 5)) { // 1 = aan, 2 = inv. uit, 5 = inv geblokkeerd
+          digitalWrite(HC_UIT, HIGH);
+        } else { // 0 = uit, 3 = inv aan, 4 = geblokkeerd
+          digitalWrite(HC_UIT, LOW);
+        }
+        
+        // Invoer lezen
+        tmp_status = digitalRead(HC_IN);
+        // Controleren of de invoer is gewijzigd. Dit wel in de gewone volgorde omdat dit binnen komend signaal is.
+        if (tmp_status != io_input[i_in]) {
+          // Bij een wijziging vaststellen dat deze is gewijzigd en ook de aanpassing opslaan
+          io_gewijzigd[i_in] = true;
+          io_input[i_in] = tmp_status;
+          // io_meeschakelen(i_in);
+        }
+    
+        delay(1);
+        // Seriele klok hoog
+        digitalWrite(HC_SCK, HIGH);
+        delay(1);
+      
+      }
+    
+      // Paralelle klokslag geven
+      digitalWrite(HC_PCK, LOW);
+      delay(10);
+      digitalWrite(HC_PCK, HIGH);
+
+      io_actief = false;
+      io_gecheckt = millis();
+    
+    }
   }
 
   void io_reset_alert(){
@@ -236,3 +413,141 @@ String io_code_naar_naam(byte code){
   }
 
 #endif
+
+void io_schakel(int knop) {
+  if (io_output[io_knoppen[knop]] == 0) {
+    // uit wordt aan
+    io_output[io_knoppen[knop]] = 1;
+    knoppen_status[knop] = 1;
+  } else if (io_output[io_knoppen[knop]] == 1) {
+    // aan wordt uit
+    io_output[io_knoppen[knop]] = 0;
+    knoppen_status[knop] = 0;
+  } else if (io_output[io_knoppen[knop]] == 2) {
+    // uit wordt aan (maar dan voor de omgekeerde schakeling)
+    io_output[io_knoppen[knop]] = 3;
+    knoppen_status[knop] = 1;
+  } else if (io_output[io_knoppen[knop]] == 3) {
+    // aan wordt uit (maar dan voor de omgekeerde schakeling)
+    io_output[io_knoppen[knop]] = 2;
+    knoppen_status[knop] = 0;
+  }
+  knop_plaatsen(knop);
+  io();
+  delay(50);
+  io();
+}
+
+int io_output_status(byte output) {
+  /* Deze functie zet de io_output (0 - 5) om in de weer te geven status (0 - 2) */
+  
+  if (output == 0) {
+    return 0;
+  } else if (output == 1) {
+    return 1;
+  } else if (output == 2) {
+    return 0;
+  } else if (output == 3) {
+    return 1;
+  } else if (output == 4) {
+    return 2;
+  } else if (output == 5) {
+    return 2;
+  }
+  return 99;
+}
+
+void io_set_defaults(){
+  delete[]io_objecten;
+  delete[]io_object_ruimte;
+  delete[]io_output;
+  delete[]io_input;
+  delete[]io_gewijzigd;
+  delete[]io_open_alert;
+  delete[]io_namen;
+  delete[]io_sd;
+  delete[]io_events;
+  
+  int cnt = 24;
+  io_knoppen_cnt = 10;
+  // int cnt = 8;
+  // io_knoppen_cnt = 4;
+  io_cnt = cnt;
+  io_objecten = new byte[cnt];
+  io_object_ruimte = new byte[cnt];
+  io_output = new byte[cnt];
+  io_input = new bool[cnt];
+  io_gewijzigd = new bool[cnt];
+  io_open_alert = new bool[cnt];
+  io_alert = new byte[cnt];
+  io_namen = new char*[cnt];
+  io_knoppen = new int[io_knoppen_cnt];
+  
+  for (int i = 0 ; i < io_cnt ; i++) {
+    io_namen[i] = new char[11];
+  }
+  io_events = new byte***[io_cnt];
+  for (int i = 0; i < io_cnt; i++) {
+    io_object_ruimte[i] = 255;
+    io_events[i] = new byte**[2];
+    for (int j = 0; j < 2; j++) {
+      io_events[i][j] = new byte*[2];
+      for (int k = 0; k < 2; k++) {
+        io_events[i][j][k] = new byte[10];
+        for (int l = 0; l < 10; l++) {
+          io_events[i][j][k][l] = 255;
+        }
+      }
+    }
+  }
+  
+  for (int nr = 0; nr < cnt; nr++){
+    io_objecten[nr] = 0;
+    io_output[nr] = 0;
+    io_input[nr] = 0;
+    io_alert[nr] = 3;
+    io_namen[nr] = "?         ";
+
+    if (nr < 3) {
+      io_objecten[nr] = 3;
+      io_knoppen[nr] = nr;
+      
+    }
+    if (nr == 0){
+      io_namen[nr] = "**USB    ";
+    } else if (nr == 1) {
+      io_namen[nr] = "**230    ";
+    } else if (nr == 14){
+      io_knoppen[3] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_hek";
+    } else if (nr == 16){
+      io_knoppen[4] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_anker";
+    } else if (nr == 17){
+      io_knoppen[5] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_navi ";
+    } else if (nr == 18){
+      io_knoppen[6] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_3kl  ";
+    } else if (nr == 19){
+      // io_objecten[nr] = 3;
+      io_namen[nr] = "**I_licht";
+    } else if (nr == 20){
+      io_knoppen[7] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_dek  ";
+    } else if (nr == 22){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_stoom";
+    } else if (nr == 23){
+      io_knoppen[9] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**tv     ";
+    }
+  }
+}

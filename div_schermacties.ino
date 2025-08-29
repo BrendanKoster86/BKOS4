@@ -190,9 +190,16 @@ void center_tekst(int16_t x, int16_t y, String tekst, int tekst_grootte=1, uint1
   x = scherm_x(x);
   y = scherm_y(y);
   
-  tft.setTextSize(tekst_grootte);
+  int _tekst_grootte = 1;
+  for (int i = 1; i <= 20; i++){
+    if ((scherm_x(tekst_grootte) >= i) && (scherm_y(tekst_grootte) >= i)) {
+      _tekst_grootte = i;
+    }
+  }
+
+  tft.setTextSize(_tekst_grootte);
   tft.setTextColor(tekst_kleur);
-  tft.setCursor((x - tekst.length()*tekst_grootte*3), y);
+  tft.setCursor((x - tekst.length()*_tekst_grootte*3), y);
   tft.print(tekst);
 
 }
