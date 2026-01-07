@@ -31,6 +31,7 @@
     ts.read();
   }
   void ts_setup(){
+    // Hier onstaat helaas een fout in de Serial Monitor... dat is helaas wat het is niks aan te doen (anders werkt het touchscreen niet)
     ts.begin();
     ts.setRotation(0);
   }

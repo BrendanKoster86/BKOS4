@@ -59,7 +59,20 @@ void knop_plaatsen(int knop_nummer, bool tekst) {
         fillCircle((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2), (knoppen_teken_positie[knop_nummer][1]+knoppen_teken_positie[knop_nummer][3]/2), 2, kleur_wit);
         // drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 15, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_zwart, icon_30_L_anker, sizeof(icon_30_L_anker)/sizeof(byte));
       }
-    }  else {
+    } else if ((knoppen_tekst[knop_nummer][2] == 'T') && (knoppen_tekst[knop_nummer][3] == 'B')) {
+      uint32_t kleur = kleur_wit;
+      if ((knoppen_tekst[knop_nummer][5] == 'r') && (knoppen_tekst[knop_nummer][6] == 'o') && (knoppen_tekst[knop_nummer][7] == 'o') && (knoppen_tekst[knop_nummer][8] == 'd')) {
+        kleur = kleur_actief_rood;
+      } else if ((knoppen_tekst[knop_nummer][5] == 'b') && (knoppen_tekst[knop_nummer][6] == 'l') && (knoppen_tekst[knop_nummer][7] == 'a') && (knoppen_tekst[knop_nummer][8] == 'u')) {
+        kleur = kleur_blauw;
+      } else if ((knoppen_tekst[knop_nummer][5] == 'g') && (knoppen_tekst[knop_nummer][6] == 'r') && (knoppen_tekst[knop_nummer][7] == 'o') && (knoppen_tekst[knop_nummer][8] == 'e')) {
+        kleur = kleur_passief_groen;
+      } else if ((knoppen_tekst[knop_nummer][5] == 'g') && (knoppen_tekst[knop_nummer][6] == 'e') && (knoppen_tekst[knop_nummer][7] == 'e') && (knoppen_tekst[knop_nummer][8] == 'l')) {
+        kleur = kleur_geel;
+      }
+      fillCircle((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2), (knoppen_teken_positie[knop_nummer][1]+knoppen_teken_positie[knop_nummer][3]/2), 15, kleur);
+
+    } else {
       center_tekst(knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2, knoppen_teken_positie[knop_nummer][1]+10, knoppen_tekst[knop_nummer], 1.5, knoppen_tekst_kleur[knop_nummer][knoppen_status[knop_nummer]]); // tijdelijk
     }
   // } else if ((tekst)) & (!knoppen_tekst2[knop_nummer] != "          ")) {

@@ -39,11 +39,7 @@ void bouw_exterieur() {
   // header_plaatsen("Schakelscherm");
   achtergrond(kleur_licht);
 
-  if (io_knoppen_cnt < 10) {
-    aantal_knoppen = io_knoppen_cnt;
-  } else {
-    aantal_knoppen = 10;
-  }
+  aantal_knoppen = exterieur_knoppen_cnt;
   
   delete[]knoppen_positie;
   delete[]knoppen_teken_positie;
@@ -194,14 +190,17 @@ void exterieur_symbolen_verlichting(int32_t x, int32_t y){
 }
 
 void run_exterieur() {
-  ts_begin();
   int druk;
-  if (ts_touched()) {
-      
-    int x = touch_x();
-    int y = touch_y();
-    
-    druk = klik(x, y);
+  Serial.print('.');
+  if (actieve_touch) {
+    Serial.println('_');
+    Serial.print('_');
+    Serial.print(ts_x);
+    Serial.print("; ");
+    Serial.print(ts_y);
+    druk = klik(ts_x, ts_y);
+    Serial.print(": ");
+    Serial.print(druk);
 
     if (druk > -1){
       exterieurscherm_schakel(druk);
@@ -213,11 +212,11 @@ void run_exterieur() {
       ts_begin();
     }
 
-    if (y >= home_knop[1]) {
+    if (ts_y >= home_knop[1]) {
       actieve_app = 0;
       scherm_bouwen = true;
-    } else if (y < 30) {
-      klik_header(x, y);
+    } else if (ts_y < 30) {
+      klik_header(ts_x, ts_y);
     }
 
     

@@ -9,6 +9,8 @@ int io_cnt;
 int io_knoppen_cnt;
 int io_sensoren_cnt;
 
+unsigned long io_lost = 0;
+
 int io_alert_cnt;
 int io_alert_app;
 int io_diepcheck_cnt = 0;

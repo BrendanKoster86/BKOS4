@@ -90,32 +90,26 @@ void schakelscherm_indicator_bolletjes() {
 
 void run_schakelscherm() {
   schakelscherm_indicator_bolletjes();
-  ts_begin();
+  // ts_begin();
   int druk;
-  if (ts_touched()) {
+
+  if (actieve_touch) {
       
-    int x = touch_x();
-    int y = touch_y();
-    
-    druk = klik(x, y);
+    druk = klik(ts_x, ts_y);
 
     if (druk > -1){
       io_schakel(druk);
       io_wijziging = true;
     }
 
-    while (ts_touched()) {
-      ts_begin();
-    }
-
-    if (y >= home_knop[1]) {
+    if (ts_y >= home_knop[1]) {
       actieve_app = 0;
       scherm_bouwen = true;
-    } else if (y < 30) {
-      klik_header(x, y);
+    } else if (ts_y < 30) {
+      klik_header(ts_x, ts_y);
     }
 
     
   }
-  ts_begin(); 
+  // ts_begin(); 
 }

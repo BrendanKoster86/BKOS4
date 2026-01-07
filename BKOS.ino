@@ -27,6 +27,37 @@ void BKOS_boot(){
   } else if (ORIENTATIE == 0) {
     qr_bytes(150, 10, qr_brendanintechYT, scherm_x(3), kleur_donker, kleur_licht);
   }
+
+  tft.setTextColor(tft.color565(0, 0, 110));
+  char c = ' ';
+  while (Serial.available()) {
+    c = Serial.read();
+    tft.print(c);
+    if (!Serial.available()){
+      delay(20);
+    }
+  }
+  tft.println("");
+  tft.setTextColor(tft.color565(255, 255, 255));
+
+  tft.print("  AT S?  ");
+  Serial.println("AT S?");
+  tft.setTextColor(tft.color565(0, 110, 0));
+  unsigned int laatste = millis();
+  while (c != '\n' && millis() < laatste + 5000) {
+    if (Serial.available()){
+      c = Serial.read();
+      tft.print(c);
+    }
+  }
+  if (c == '\n') {
+    tft.println("");
+  } else {
+    tft.setTextColor(tft.color565(255, 0, 0));
+    tft.println("Helaas, niks gevonden");
+  }
+  tft.setTextColor(tft.color565(255, 255, 255));
+
   io_boot();
   io_set_defaults();
   // qr(120, 200, "brendanintech", 2)//, kleur_donker, kleur_licht);

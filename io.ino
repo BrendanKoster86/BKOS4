@@ -38,9 +38,10 @@ String io_code_naar_naam(byte code){
    * Op het momnt heeft het eerste mijn voorkeur mocht dat lukken.
    */
 
+  bool io_verbonden = true;
+
   void io_boot() {
-    // io_detect();
-    Serial.print("AT+MODUS=n");
+    io_detect();
   }
 
   void io_detect() {
@@ -68,9 +69,11 @@ String io_code_naar_naam(byte code){
      * 
      */
     int cnt = 0;
-    int I;
+    byte aparaten [30];
+    int bit;
+    int input;
     bool eind = false;
-    bool verbonden = true;
+    io_verbonden = true;
     byte factor;
     char A;
     char L;
@@ -82,219 +85,206 @@ String io_code_naar_naam(byte code){
     // Serial.println();
     // Serial.println(Serial.available());
 
-    unsigned long timeout = 5000;
-
-    unsigned long laatste = millis();
     delay(100);
+    
+    unsigned long timeout = 5000;
+    unsigned long laatste = millis();
     // Start maken in communiceren met de Seriele module door het versie nummer op te vragen.
     // De verwachte response is een 'V' gevolgd door de versie aanduiding welk niet gespecificeerd is als 1 println statement.'
-    Serial.print("AT+MODUS=d");
-    Serial.println("");
-    // Serial.println("IOV");
-    while ((!Serial.available() > 0) && (laatste + timeout > millis())) {
+
+    // Eerst even de serial leeg maken
+    Serial.println("IOD");
+    delay(50);
+    while (Serial.available()) {
+      A = Serial.read();
       delay(50);
     }
-
-    if (!Serial.available() > 0) {
-      tft.setTextColor(kleur_rood);
-      tft.println("  IO module niet (goed) aangesloten");
-      tft.setCursor(tft.getCursorX(), tft.getCursorY()+5);
-      verbonden = false;
-      tft.setTextColor(kleur_wit);
-    } else {
-      if (Serial.read() == 'V') {
-        tft.print("  Seriele moduele versie: ");
-        while (Serial.available()) {
-          A = Serial.read();
-          tft.print(A);
-        }
-        tft.println();
-        tft.setCursor(tft.getCursorX(), tft.getCursorY()+5);
-      } else {
-        tft.setTextColor(kleur_rood);
-        tft.println("  Onverwachte reactie");
-        tft.setCursor(tft.getCursorX(), tft.getCursorY()+5);
-        verbonden = false;
-        tft.setTextColor(kleur_wit);
-      }
-
-    }
-
-    if (verbonden) {
-      // Kijken hoeveel aparaten (met ID chip) zijn aangesloten door telkens 8 nullen te sturen. Zolang het antwoord een variatie is van 0 en 1 is er een aparaat aangesloten.
-      // Beginnen om kenbaar te maken dat ik ID's verwacht door IOD (D van detectie) te sturen.
-      // De verwacte eerste response is 'D'. Deze moet eerst komen als check dat begrepen is dat het om ID's gaat en niet in Inputs.
-      Serial.print("IOD");
+    tft.print("  ");
+    
+    while (!eind) {
+      bit = 1;
       laatste = millis();
-      while ((!Serial.available() > 0) && (laatste + timeout > millis())) {
+      tft.print(cnt+1);
+      tft.print(": ");
+      input = 0;
+      
+      Serial.print("00000000");
+      while (!Serial.available() && (millis() < laatste + timeout)) {
         delay(50);
       }
-      if ((Serial.available()) && (Serial.read() == 'D')) {
-        while (eind == false) {
-          Serial.print("00000000");
-          delay(100);
-          eind = true;
-          I = 0;
-          laatste = millis();
-          A = '2';
-          factor = 1;
-
-          while ((I < 8) && (laatste + timeout > millis())) {
-            if (Serial.available() > 0) {
-              while (Serial.available()) {
-                L = A;
-                A = Serial.read();
-                if ((A == '0') || (A == '1')) {
-                  laatste = millis();
-                  I++;
-                  if (((L == '0') & ( A == '1')) | ((L == '1') & ( A == '0'))) {
-                    eind = false;
-                  }
-                  if (A == '1') {
-                    io_detectie[cnt+1] = io_detectie[cnt+1] + factor;
-                  }
-                  factor = factor * 2;
-                }
-              }
-            }
+      
+      while (Serial.available()) {
+        A = Serial.read();
+        if (A == '1') {
+          int add_number = 1;
+          for (int i = 1; i < bit; i++){
+            add_number = add_number*2;
           }
-          if (eind == false) {
-            cnt ++;
-          }
-        }
+          input += add_number;
+        } 
+        bit ++;
+        while (bit < 9 && !Serial.available() && (millis() < laatste + timeout)) {
+          delay(50);
+        } 
       }
-      Serial.println("");
-      tft.print("  ");
-      tft.print(cnt);
-      tft.println(" aparaten gevonden:");
-      tft.setCursor(tft.getCursorX(), tft.getCursorY()+5);
-      tft.print("  ");
-      io_detectie[0] = cnt;
-      for (int i = 0; i < cnt; i++) {
-        if (i > 0){
-          tft.print(", ");
-        }
-        
-        if (io_code_naar_naam(io_detectie[i+1]) != "") {
-          tft.setTextColor(tft.color565(150, 150, 150));
-          tft.print(io_detectie[i+1]);
-          tft.print(" (");
-          tft.setTextColor(kleur_wit);
-          tft.print(io_code_naar_naam(io_detectie[i+1]));
-          tft.setTextColor(tft.color565(150, 150, 150));
-          tft.print(")");
-          tft.setTextColor(kleur_wit);
-        } else {
-          tft.print(io_detectie[i+1]);
+
+      if (bit != 9) {
+        eind = true;
+        tft.print("Geen 8 bit ontvangen");
+      }
+      
+      if (input == 0) {
+        eind = true;
+      } else if (input == 255){
+        eind = true;
+      } else {
+        aparaten[cnt] = input;
+        tft.print(" (");
+        tft.print(input);
+        tft.print(") ");
+        cnt ++;
+        bit = 1;
+        if (cnt >= 30) {
+          eind = true;
+          tft.print("Te veel voor nu");
         }
       }
     }
-  }
+    
+    Serial.print('\n');
+    delay(50);
+    while (Serial.available()) {
+      L = Serial.read();
+    }
 
+    if (cnt == 0) {
+      io_verbonden = false; // was false
+      io_lost = millis();
+      tft.print("Geen BKOSS module gevonden");
+      delay(2500);
+    } else {
+      tft.println('-');
+      tft.print("  ");
+      tft.print(cnt);
+      if (cnt == 1) {
+        tft.println(" Module gevonden");
+      } else {
+        tft.println(" Modules gevonden");
+      }
+      tft.print("  ");
+      delay(2500);
+    }
+  }
   void io() {
-    Serial.println("");
-    delay(10);
     // Serial.print("IO");
     char invoer;
     bool tmp_status;
     int i_uit;
     int i_in;
 
-    // // TIJDELIJK VOOR DEBUGEN
-    // fillRect(0, 0, 200, 60, kleur_zwart);
-    // tft.setTextSize(1);
-    // tft.setTextColor(kleur_wit);
-    // tft.setCursor(20, 10);
-    // tft.print("IO: ");
-
     while (Serial.available()){
       // Leeg maken van oude communicatie
       invoer = Serial.read();
       // tft.print(invoer);
     }
-    // tft.print(" -- ");
+    
+    unsigned long timeout = 5000;
+    unsigned long laatste = millis();
 
-    if (!io_actief){
-      io_actief = true;
-      for (int i = 0 ; i < io_cnt ; i++) {
-          
-        i_uit = io_cnt - (i+1);
-        i_in = i;
-        // tft.print(i);
-        // tft.print('[');
+    if (!io_verbonden &&  millis() > io_lost + timeout) {
+      io_verbonden = true;
+    }
 
-        if ((io_output[i_uit] == 1) || (io_output[i_uit] == 2) || (io_output[i_uit] == 5)) { // 1 = aan, 2 = inv. uit, 5 = inv geblokkeerd
-          Serial.print('1');
-          // tft.print('1');
-        } else { // 0 = uit, 3 = inv aan, 4 = geblokkeerd
-          Serial.print('0');
-          // tft.print('0');
+    if (io_verbonden) {
+      if (!io_actief){
+        io_actief = true;
+        Serial.println("IO");
+        delay(10);
+
+        while (Serial.available()){
+          delay(50);
         }
-        delay(25);
-        invoer = ' ';
-        int r = 1;
-        bool draaien = true;
-        bool antwoord = false;
-        while (draaien) {
+
+        if (io_cnt >= 8) {
+          // Een werkvoorraadje maken van 8 opdrachten zodat de complete overdracht (denk ik) sneller verloopt
+          for (int i = 0 ; i < 8 ; i++) {
+            i_uit = io_cnt - (i+1);
+            if ((io_output[i_uit] == 1) || (io_output[i_uit] == 2) || (io_output[i_uit] == 5)) { // 1 = aan, 2 = inv. uit, 5 = inv geblokkeerd
+              Serial.print('1');
+            } else { // 0 = uit, 3 = inv aan, 4 = geblokkeerd
+              Serial.print('0');
+            }
+          }
+        } else {
+          for (int i = 0 ; i < io_cnt ; i++) {
+            i_uit = io_cnt - (i+1);
+            if ((io_output[i_uit] == 1) || (io_output[i_uit] == 2) || (io_output[i_uit] == 5)) { // 1 = aan, 2 = inv. uit, 5 = inv geblokkeerd
+              Serial.print('1');
+            } else { // 0 = uit, 3 = inv aan, 4 = geblokkeerd
+              Serial.print('0');
+            }
+          }
+        }
+
+        int i = 0;
+        while (i < io_cnt && io_verbonden) {
+          i_in = i;
+
+          delay(25);
+          invoer = ' ';
+          int r = 1;
+          bool draaien = true;
+          bool antwoord = false;
+          
+          while (!Serial.available() && millis() < laatste + timeout){
+            delay(50);
+          }
+
           if (Serial.available()) {
+            tft.setTextColor(tft.color565(0, 255, 0));
             invoer = Serial.read();
             if ((invoer == '0') || (invoer == '1')){
-              draaien = false;
-              antwoord = true;
+              if (invoer == '1') {
+                tmp_status = true;
+              } else if (invoer == '0') {
+                tmp_status = false;
+              }
+
+              if (tmp_status != io_input[i_in]) {
+                // Bij een wijziging vaststellen dat deze is gewijzigd en ook de aanpassing opslaan
+                io_gewijzigd[i_in] = true;
+                io_input[i_in] = tmp_status;
+                // io_meeschakelen(i_in);
+              }
+
             } else {
-              // tft.print(invoer);
               delay(5);
             }
           } else {
-            // tft.print('.');
-            delay(5*r);
+            io_verbonden = false; // was false
+            io_lost = millis();
+            
           }
-          r++;
-          if (r >= 20) {
-            if (!antwoord){
-              if (Serial.available()){
-                invoer = Serial.read();
-                draaien = false;
-                antwoord = true;
-              }
+  
+          if (io_cnt > i+8) {
+            i_uit = io_cnt - (i+9);
+            if ((io_output[i_uit] == 1) || (io_output[i_uit] == 2) || (io_output[i_uit] == 5)) { // 1 = aan, 2 = inv. uit, 5 = inv geblokkeerd
+              Serial.print('1');
+            } else { // 0 = uit, 3 = inv aan, 4 = geblokkeerd
+              Serial.print('0');
             }
+          } else if (io_cnt == i+8) {
+            Serial.print('\n');
           }
+          i++;
         }
-        
-        if (antwoord){
-          // invoer = Serial.read();
-          // // DEBUG
-          // tft.print(invoer);
-          if (invoer == '1') {
-            tmp_status = true;
-          } else if (invoer == '0') {
-            tmp_status = false;
-          } else {
-            tmp_status = false;
-            // tft.print("!");
-            while (Serial.available()){
-              invoer = Serial.read();
-              tft.print(invoer);
-            }
-          }
-          // Controleren of de invoer is gewijzigd. Dit wel in de gewone volgorde omdat dit binnen komend signaal is.
-          if (tmp_status != io_input[i_in]) {
-            // Bij een wijziging vaststellen dat deze is gewijzigd en ook de aanpassing opslaan
-            io_gewijzigd[i_in] = true;
-            io_input[i_in] = tmp_status;
-            // io_meeschakelen(i_in);
-          }
-        } else {
-          // DEBUG
-          // tft.print('?');
+
+        while (Serial.available()) {
+          invoer = Serial.read();
         }
-        // tft.print(']');
+
+        io_actief = false;
       }
-      delay(10);
-      Serial.println("");
-      
-      io_gecheckt = millis();
-      io_actief = false;
     }
   }
 
@@ -457,7 +447,48 @@ int io_output_status(byte output) {
   return 99;
 }
 
+
 void io_set_defaults(){
+  /* Ik wil een aantal standaarden maken om de module voor het werken met de SD kaart toch flexiebel te maken in de testfase
+   * Mijn streven is om op adres 616 van de EEPROM een cijfer op te slaan die refereert aan de gebruikte standaard
+   * De standaarden die ik wil inbouwen zijn:
+   * 
+   1: De setup zoals die op mijn boot is, die kan aanveranderingen onderhevig zijn
+   2: Enkel module test/demo setup
+   3: Dubbele module test/demo setup
+   *
+   4: Escaperoom setup met 1 module
+   5: Escaperoom setup met 2 modules
+   *
+   6: demo
+   */
+
+   int standaard = 2;//EEPROM.read(616);
+   tft.print("IO_standaard: ");
+   tft.print(' ');
+   tft.println(standaard);
+   if (standaard == 1){
+    io_set_1();
+   } else if (standaard == 2){
+    io_set_2();
+   } else if (standaard == 3){
+    io_set_3();
+   } else if (standaard == 4){
+    io_set_4();
+   } else if (standaard == 5){
+    io_set_5();
+   } else if (standaard == 6){
+    io_set_6();
+   } else {
+    EEPROM.write(616, 2);
+    tft.println("Poging dit voor volgende keer op 1 te zetten");
+    io_set_2();
+    delay(500);
+   }
+}
+
+void io_set_1(){
+  /* Setup voor mijn eigen boot... Mogelijk aan veranderingen onder hevig */
   delete[]io_objecten;
   delete[]io_object_ruimte;
   delete[]io_output;
@@ -469,9 +500,7 @@ void io_set_defaults(){
   delete[]io_events;
   
   int cnt = 24;
-  io_knoppen_cnt = 10;
-  // int cnt = 8;
-  // io_knoppen_cnt = 4;
+  io_knoppen_cnt = 11;
   io_cnt = cnt;
   io_objecten = new byte[cnt];
   io_object_ruimte = new byte[cnt];
@@ -535,19 +564,570 @@ void io_set_defaults(){
       io_namen[nr] = "**L_3kl  ";
     } else if (nr == 19){
       // io_objecten[nr] = 3;
-      io_namen[nr] = "**I_licht";
+      io_namen[nr] = "**IL_wit ";
     } else if (nr == 20){
       io_knoppen[7] = nr;
       io_objecten[nr] = 3;
-      io_namen[nr] = "**L_dek  ";
-    } else if (nr == 22){
+      io_namen[nr] = "**E_dek  ";
+    } else if (nr == 21){
       io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**IL_rood";
+    } else if (nr == 22){
+      io_knoppen[9] = nr;
       io_objecten[nr] = 3;
       io_namen[nr] = "**L_stoom";
     } else if (nr == 23){
-      io_knoppen[9] = nr;
+      io_knoppen[10] = nr;
       io_objecten[nr] = 3;
       io_namen[nr] = "**tv     ";
     }
   }
+}
+
+void io_set_2(){
+  /* Basis setup voor de test module en demo met 1 module 
+   * De volgende Dingen kunnen worden aangesloten:
+   *
+   1: Witte verlichting
+   2: Rode verlichting
+   3: Heklicht (wit licht achterop de boot)
+   4: Ankerlicht (wit licht bovenin de mast)
+   5: Navigatie verlichting (rood licht links en groen licht rechts)
+   6: 3 kleuren toplicht
+   7: Deklicht (licht dat vanaf de mast het voordek verlicht)
+   8: Stoomlicht (Witlicht in de mast dat naar voren schijnt)
+   */
+  delete[]io_objecten;
+  delete[]io_object_ruimte;
+  delete[]io_output;
+  delete[]io_input;
+  delete[]io_gewijzigd;
+  delete[]io_open_alert;
+  delete[]io_namen;
+  delete[]io_sd;
+  delete[]io_events;
+  
+  int cnt = 8;
+  io_knoppen_cnt = 8;
+  io_cnt = cnt;
+  io_objecten = new byte[cnt];
+  io_object_ruimte = new byte[cnt];
+  io_output = new byte[cnt];
+  io_input = new bool[cnt];
+  io_gewijzigd = new bool[cnt];
+  io_open_alert = new bool[cnt];
+  io_alert = new byte[cnt];
+  io_namen = new char*[cnt];
+  io_knoppen = new int[io_knoppen_cnt];
+  
+  for (int i = 0 ; i < io_cnt ; i++) {
+    io_namen[i] = new char[11];
+  }
+  io_events = new byte***[io_cnt];
+  for (int i = 0; i < io_cnt; i++) {
+    io_object_ruimte[i] = 255;
+    io_events[i] = new byte**[2];
+    for (int j = 0; j < 2; j++) {
+      io_events[i][j] = new byte*[2];
+      for (int k = 0; k < 2; k++) {
+        io_events[i][j][k] = new byte[10];
+        for (int l = 0; l < 10; l++) {
+          io_events[i][j][k][l] = 255;
+        }
+      }
+    }
+  }
+  
+  for (int nr = 0; nr < cnt; nr++){
+    io_objecten[nr] = 0;
+    io_output[nr] = 0;
+    io_input[nr] = 0;
+    io_alert[nr] = 3;
+    io_namen[nr] = "?         ";
+
+    if (nr < 3) {
+      io_objecten[nr] = 3;
+      io_knoppen[nr] = nr;
+      
+    }
+    if (nr == 0){
+      io_namen[nr] = "**IL_wit ";
+    } else if (nr == 1) {
+      io_namen[nr] = "**IL_rood";
+    } else if (nr == 2){
+      io_knoppen[nr] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_hek  ";
+    } else if (nr == 3){
+      io_knoppen[nr] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_anker";
+    } else if (nr == 4){
+      io_knoppen[nr] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_navi ";
+    } else if (nr == 5){
+      io_knoppen[nr] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_3kl  ";
+    } else if (nr == 6){
+      io_knoppen[nr] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_stoom";
+    } else if (nr == 7){
+      io_knoppen[nr] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**E_dek  ";
+    }
+  }
+}
+
+void io_set_3(){
+  /* Setup voor de test/demo met 2 modulen
+   * Uitgangspunt is een uitbreiding op bovenstaande
+   * De eerste module kan worden vervangen door een module met kapote lamp detectie
+   * De tweede module niet omdat dit de mogelijkheid van input blokkeert.
+   * De volgende Dingen kunnen worden aangesloten:
+   *
+   MODULE 1:
+   1: Witte verlichting
+   2: Rode verlichting
+   3: Heklicht (wit licht achterop de boot)
+   4: Ankerlicht (wit licht bovenin de mast)
+   5: Navigatie verlichting (rood licht links en groen licht rechts)
+   6: 3 kleuren toplicht
+   7: Deklicht (licht dat vanaf de mast het voordek verlicht)
+   8: Stoomlicht (Witlicht in de mast dat naar voren schijnt)
+   *
+   MODULE 2:
+   1: USB stopcontacten
+   2: 12 volt stopcontacten
+   3: 230 volt omvormer
+   4: Stuurautomaat
+   5: TV
+   6: ?
+   7: Motor actief (signaal lampje dynamo)
+   8: Walstroom actief (kleine 12 volt voeding op walstroom)
+   *
+   */
+  delete[]io_objecten;
+  delete[]io_object_ruimte;
+  delete[]io_output;
+  delete[]io_input;
+  delete[]io_gewijzigd;
+  delete[]io_open_alert;
+  delete[]io_namen;
+  delete[]io_sd;
+  delete[]io_events;
+  
+  int cnt = 16;
+  io_knoppen_cnt = 13;
+  io_cnt = cnt;
+  io_objecten = new byte[cnt];
+  io_object_ruimte = new byte[cnt];
+  io_output = new byte[cnt];
+  io_input = new bool[cnt];
+  io_gewijzigd = new bool[cnt];
+  io_open_alert = new bool[cnt];
+  io_alert = new byte[cnt];
+  io_namen = new char*[cnt];
+  io_knoppen = new int[io_knoppen_cnt];
+  
+  for (int i = 0 ; i < io_cnt ; i++) {
+    io_namen[i] = new char[11];
+  }
+  io_events = new byte***[io_cnt];
+  for (int i = 0; i < io_cnt; i++) {
+    io_object_ruimte[i] = 255;
+    io_events[i] = new byte**[2];
+    for (int j = 0; j < 2; j++) {
+      io_events[i][j] = new byte*[2];
+      for (int k = 0; k < 2; k++) {
+        io_events[i][j][k] = new byte[10];
+        for (int l = 0; l < 10; l++) {
+          io_events[i][j][k][l] = 255;
+        }
+      }
+    }
+  }
+  
+  for (int nr = 0; nr < cnt; nr++){
+    io_objecten[nr] = 0;
+    io_output[nr] = 0;
+    io_input[nr] = 0;
+    io_alert[nr] = 3;
+    io_namen[nr] = "?         ";
+
+    if (nr < 3) {
+      io_objecten[nr] = 3;
+      io_knoppen[nr] = nr;
+      
+    }
+    if (nr == 0){
+      io_namen[nr] = "**IL_wit ";
+    } else if (nr == 1) {
+      io_namen[nr] = "**IL_rood";
+    } else if (nr == 2){
+      io_knoppen[3] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_hek  ";
+    } else if (nr == 3){
+      io_knoppen[4] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_anker";
+    } else if (nr == 4){
+      io_knoppen[5] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_navi ";
+    } else if (nr == 5){
+      io_knoppen[6] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_3kl  ";
+    } else if (nr == 6){
+      io_knoppen[7] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**E_dek  ";
+    } else if (nr == 7){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_stoom";
+    } else if (nr == 8){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**USB    ";
+    } else if (nr == 9){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**12v    ";
+    } else if (nr == 10){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**230    ";
+    } else if (nr == 11){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**ST_AUTO";
+    } else if (nr == 12){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**TV     ";
+    } else if (nr == 13){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 0;
+      io_namen[nr] = "?";
+    } else if (nr == 14){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**S_MOTOR";
+    } else if (nr == 15){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**S_WAL  ";
+    }
+  }
+}
+
+void io_set_4(){
+  /* Basis setup voor de test module en demo met 1 module nog om te schrijven naar escaperoom
+   * De volgende Dingen kunnen worden aangesloten:
+   *
+   1: Witte verlichting
+   2: Rode verlichting
+   3: Heklicht (wit licht achterop de boot)
+   4: Ankerlicht (wit licht bovenin de mast)
+   5: Navigatie verlichting (rood licht links en groen licht rechts)
+   6: 3 kleuren toplicht
+   7: Deklicht (licht dat vanaf de mast het voordek verlicht)
+   8: Stoomlicht (Witlicht in de mast dat naar voren schijnt)
+   */
+  delete[]io_objecten;
+  delete[]io_object_ruimte;
+  delete[]io_output;
+  delete[]io_input;
+  delete[]io_gewijzigd;
+  delete[]io_open_alert;
+  delete[]io_namen;
+  delete[]io_sd;
+  delete[]io_events;
+  
+  int cnt = 8;
+  io_knoppen_cnt = 8;
+  io_cnt = cnt;
+  io_objecten = new byte[cnt];
+  io_object_ruimte = new byte[cnt];
+  io_output = new byte[cnt];
+  io_input = new bool[cnt];
+  io_gewijzigd = new bool[cnt];
+  io_open_alert = new bool[cnt];
+  io_alert = new byte[cnt];
+  io_namen = new char*[cnt];
+  io_knoppen = new int[io_knoppen_cnt];
+  
+  for (int i = 0 ; i < io_cnt ; i++) {
+    io_namen[i] = new char[11];
+  }
+  io_events = new byte***[io_cnt];
+  for (int i = 0; i < io_cnt; i++) {
+    io_object_ruimte[i] = 255;
+    io_events[i] = new byte**[2];
+    for (int j = 0; j < 2; j++) {
+      io_events[i][j] = new byte*[2];
+      for (int k = 0; k < 2; k++) {
+        io_events[i][j][k] = new byte[10];
+        for (int l = 0; l < 10; l++) {
+          io_events[i][j][k][l] = 255;
+        }
+      }
+    }
+  }
+  
+  for (int nr = 0; nr < cnt; nr++){
+    io_objecten[nr] = 0;
+    io_output[nr] = 0;
+    io_input[nr] = 0;
+    io_alert[nr] = 3;
+    io_namen[nr] = "?         ";
+
+    if (nr < 3) {
+      io_objecten[nr] = 3;
+      io_knoppen[nr] = nr;
+      
+    }
+    if (nr == 0){
+      io_namen[nr] = "**IL_wit ";
+    } else if (nr == 1) {
+      io_namen[nr] = "**IL_rood";
+    } else if (nr == 2){
+      io_knoppen[3] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_hek  ";
+    } else if (nr == 3){
+      io_knoppen[4] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_anker";
+    } else if (nr == 4){
+      io_knoppen[5] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_navi ";
+    } else if (nr == 5){
+      io_knoppen[6] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_3kl  ";
+    } else if (nr == 6){
+      io_knoppen[7] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**E_dek  ";
+    } else if (nr == 7){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_stoom";
+    }
+  }
+}
+
+void io_set_5(){
+  /* Setup voor de test/demo met 2 modulen nog om te schrijven naar 2 modulen escaperoom
+   * Uitgangspunt is een uitbreiding op bovenstaande
+   * De eerste module kan worden vervangen door een module met kapote lamp detectie
+   * De tweede module niet omdat dit de mogelijkheid van input blokkeert.
+   * De volgende Dingen kunnen worden aangesloten:
+   *
+   MODULE 1:
+   1: Witte verlichting
+   2: Rode verlichting
+   3: Heklicht (wit licht achterop de boot)
+   4: Ankerlicht (wit licht bovenin de mast)
+   5: Navigatie verlichting (rood licht links en groen licht rechts)
+   6: 3 kleuren toplicht
+   7: Deklicht (licht dat vanaf de mast het voordek verlicht)
+   8: Stoomlicht (Witlicht in de mast dat naar voren schijnt)
+   *
+   MODULE 2:
+   1: USB stopcontacten
+   2: 12 volt stopcontacten
+   3: 230 volt omvormer
+   4: Stuurautomaat
+   5: TV
+   6: ?
+   7: Motor actief (signaal lampje dynamo)
+   8: Walstroom actief (kleine 12 volt voeding op walstroom)
+   *
+   */
+  delete[]io_objecten;
+  delete[]io_object_ruimte;
+  delete[]io_output;
+  delete[]io_input;
+  delete[]io_gewijzigd;
+  delete[]io_open_alert;
+  delete[]io_namen;
+  delete[]io_sd;
+  delete[]io_events;
+  
+  int cnt = 16;
+  io_knoppen_cnt = 13;
+  io_cnt = cnt;
+  io_objecten = new byte[cnt];
+  io_object_ruimte = new byte[cnt];
+  io_output = new byte[cnt];
+  io_input = new bool[cnt];
+  io_gewijzigd = new bool[cnt];
+  io_open_alert = new bool[cnt];
+  io_alert = new byte[cnt];
+  io_namen = new char*[cnt];
+  io_knoppen = new int[io_knoppen_cnt];
+  
+  for (int i = 0 ; i < io_cnt ; i++) {
+    io_namen[i] = new char[11];
+  }
+  io_events = new byte***[io_cnt];
+  for (int i = 0; i < io_cnt; i++) {
+    io_object_ruimte[i] = 255;
+    io_events[i] = new byte**[2];
+    for (int j = 0; j < 2; j++) {
+      io_events[i][j] = new byte*[2];
+      for (int k = 0; k < 2; k++) {
+        io_events[i][j][k] = new byte[10];
+        for (int l = 0; l < 10; l++) {
+          io_events[i][j][k][l] = 255;
+        }
+      }
+    }
+  }
+  
+  for (int nr = 0; nr < cnt; nr++){
+    io_objecten[nr] = 0;
+    io_output[nr] = 0;
+    io_input[nr] = 0;
+    io_alert[nr] = 3;
+    io_namen[nr] = "?         ";
+
+    if (nr < 3) {
+      io_objecten[nr] = 3;
+      io_knoppen[nr] = nr;
+      
+    }
+    if (nr == 0){
+      io_namen[nr] = "**IL_wit ";
+    } else if (nr == 1) {
+      io_namen[nr] = "**IL_rood";
+    } else if (nr == 2){
+      io_knoppen[3] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_hek  ";
+    } else if (nr == 3){
+      io_knoppen[4] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_anker";
+    } else if (nr == 4){
+      io_knoppen[5] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_navi ";
+    } else if (nr == 5){
+      io_knoppen[6] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_3kl  ";
+    } else if (nr == 6){
+      io_knoppen[7] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**E_dek  ";
+    } else if (nr == 7){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**L_stoom";
+    } else if (nr == 8){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**USB    ";
+    } else if (nr == 9){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**12v    ";
+    } else if (nr == 10){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**230    ";
+    } else if (nr == 11){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**ST_AUTO";
+    } else if (nr == 12){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**TV     ";
+    } else if (nr == 13){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 0;
+      io_namen[nr] = "?";
+    } else if (nr == 14){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**S_MOTOR";
+    } else if (nr == 15){
+      io_knoppen[8] = nr;
+      io_objecten[nr] = 3;
+      io_namen[nr] = "**S_WAL  ";
+    }
+  }
+}
+
+void io_set_6(){
+  delete[]io_objecten;
+  delete[]io_object_ruimte;
+  delete[]io_output;
+  delete[]io_input;
+  delete[]io_gewijzigd;
+  delete[]io_open_alert;
+  delete[]io_namen;
+  delete[]io_sd;
+  delete[]io_events;
+  
+  int cnt = 8;
+  io_knoppen_cnt = 8;
+  io_cnt = cnt;
+  io_objecten = new byte[cnt];
+  io_object_ruimte = new byte[cnt];
+  io_output = new byte[cnt];
+  io_input = new bool[cnt];
+  io_gewijzigd = new bool[cnt];
+  io_open_alert = new bool[cnt];
+  io_alert = new byte[cnt];
+  io_namen = new char*[cnt];
+  io_knoppen = new int[io_knoppen_cnt];
+  
+  for (int i = 0 ; i < io_cnt ; i++) {
+    io_namen[i] = new char[11];
+  }
+  io_events = new byte***[io_cnt];
+  for (int i = 0; i < io_cnt; i++) {
+    io_object_ruimte[i] = 255;
+    io_events[i] = new byte**[2];
+    for (int j = 0; j < 2; j++) {
+      io_events[i][j] = new byte*[2];
+      for (int k = 0; k < 2; k++) {
+        io_events[i][j][k] = new byte[10];
+        for (int l = 0; l < 10; l++) {
+          io_events[i][j][k][l] = 255;
+        }
+      }
+    }
+  }
+  
+  for (int nr = 0; nr < 8; nr++) {
+    io_objecten[nr] = 3;
+    io_output[nr] = 0;
+    io_input[nr] = 0;
+    io_alert[nr] = 3;
+    io_knoppen[nr] = nr;
+    // io_namen[nr] = "?         ";
+  }
+  io_namen[0] = "**TB_rood";
+  io_namen[1] = "**TB_wit ";
+  io_namen[2] = "**TB_blau";
+  io_namen[3] = "**TB_groe";
+  io_namen[4] = "**TB_rood";
+  io_namen[5] = "**TB_geel";
+  io_namen[6] = "**TB_wit ";
+  io_namen[7] = "**TB_blau";
+
 }
