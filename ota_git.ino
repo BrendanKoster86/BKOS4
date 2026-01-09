@@ -21,7 +21,7 @@ void ota_git_update() {
     tft.setTextColor(kleur_groen);
     tft.println("BKOS update");
     tft.setTextColor(kleur_beige);
-    tft.setCursor(300, 70);
+    tft.setCursor(300, 45);
     tft.print(BKOS_VERSIE);
     tft.print(" > ");
     tft.println(BKOS_VERSIE_GIT);
