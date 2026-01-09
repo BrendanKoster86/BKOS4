@@ -13,11 +13,20 @@
 
 #define ORIENTATIE 0 // 1 staand, 0 liggend
 
+#define use_freeRTOS 1  // 1 voor het gebruik fan freeRTOS
+
+const unsigned long ota_interval = 5 * 60 * 1000;  // 5 minutes in milliseconds
+unsigned long ota_check = 0;
+
 int SCRIPT_RESOLUTIE = 2432;
+bool io_now = false;
 
 #include "hardware.h"
 #include "diverse.h"
 #include "BKOS.h"
+
+// void ioLoop();
+// void guiLoop();
 
 void setup() {
   Serial.begin(9600);
@@ -34,15 +43,54 @@ void setup() {
   digitalWrite(TFT_BL, HIGH);
 
   scherm_touched = millis();
+
+#if use_freeRTOS == 1
+  tft.println("");
+  tft.println("start ioTask");
+  // delay(500);
+  xTaskCreatePinnedToCore(ioTask,
+    "IO",
+    2048,
+    NULL,
+    1,
+    NULL,
+    1);
+
+  tft.println("startwifiTask");
+  delay(500);
+  xTaskCreatePinnedToCore(wifiTask,
+    "WIFI",
+    2048,
+    NULL,
+    1,
+    NULL,
+    1);
+  // delay(1000);
+  tft.println("done");
+  tft.println("exit setup");
+  
+#endif
 }
 
 
-void loop(void) {
-  if ((io_gecheckt + (io_timer)) < millis()) {
+void wifiLoop() {
+  if (millis() > ota_check + ota_interval) {
+    ota_git_update;
+    ota_check = millis();
+  }
+}
+
+
+void ioLoop(){
+  if (io_now || (io_gecheckt + (io_timer)) < millis()) {
+    io_now = false;
     io();
     delay(50);
     io();
   }
+}
+
+void guiLoop(){
   if (scherm_actief) {
     ts_begin();
     if (ts_touched()) {
@@ -60,7 +108,12 @@ void loop(void) {
       digitalWrite(TFT_BL, LOW);
     } else {
       app_uitvoeren();
+      if (millis() > klok_getekend + 5000) {
+        // klok_update();
+        header_plaatsen();
+      }
     }
+
   } else {
     ts_begin();
     if (ts_touched()) {
@@ -76,5 +129,55 @@ void loop(void) {
     }
     
   }
+}
+
+
+#if use_freeRTOS == 1
+
+void ioTask(void* parameters){
+  for (;;) {
+    ioLoop();
+    delay(50);
+  }
+}
+
+void wifiTask(void* parameters){
+  for (;;) {
+    wifiLoop();
+    delay(50);
+  }
+}
+
+void guiTask(void* parameters){
+  for (;;){
+    guiLoop();
+    delay(50);
+  }
+}
+
+void loop() {
+  guiLoop();
+  // if (io_now) {
+  //   if (io_actief){
+  //     tft.fillCircle(15, 15, 12, tft.color565(0,0,255));
+  //   } else {
+  //     tft.fillCircle(15, 15, 12, tft.color565(255,0,0));
+  //   }
+  // } else if (io_actief) {
+  //   tft.fillCircle(15, 15, 12, tft.color565(255, 0,255));
+  // } else {
+  //   tft.fillCircle(15, 15, 12, tft.color565(0, 255,0));
+  // }
   delay(50);
 }
+
+
+
+#else
+void loop(void) {
+  ioLoop();
+  guiLoop();
+  wifiLoop();
+  delay(50);
+}
+#endif

@@ -175,6 +175,7 @@ String io_code_naar_naam(byte code){
       delay(2500);
     }
   }
+
   void io() {
     // Serial.print("IO");
     char invoer;
@@ -284,6 +285,7 @@ String io_code_naar_naam(byte code){
         }
 
         io_actief = false;
+        io_runned = true;
       }
     }
   }
@@ -423,9 +425,10 @@ void io_schakel(int knop) {
     knoppen_status[knop] = 0;
   }
   knop_plaatsen(knop);
-  io();
-  delay(50);
-  io();
+  // io();
+  // delay(50);
+  // io();
+  io_now = true;
 }
 
 int io_output_status(byte output) {

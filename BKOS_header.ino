@@ -19,14 +19,14 @@ void header_plaatsen() {
 void klok_update() {
   fillRect(160, 0, 45, header_vlak[3], kleur_zwart);
   setCursor(190, 7);
-  tft.setTextSize(1);
+  tft.setTextSize(scherm_x(1));
   tft.setTextColor(kleur_wit);
   tft.print(tijd());
   h_klok_millis = millis();
   drawIcon10x10(225, 5, icon_instellingen, kleur_wit);
   drawIconWifi10x10(175, 5);
   drawIcon10x10(160, 5, icon_sd, sd_connect);
-  
+  klok_getekend = millis();
 }
 
 

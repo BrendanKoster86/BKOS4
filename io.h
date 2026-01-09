@@ -11,6 +11,8 @@ int io_sensoren_cnt;
 
 unsigned long io_lost = 0;
 
+bool io_runned = false;
+
 int io_alert_cnt;
 int io_alert_app;
 int io_diepcheck_cnt = 0;

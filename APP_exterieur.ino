@@ -191,16 +191,8 @@ void exterieur_symbolen_verlichting(int32_t x, int32_t y){
 
 void run_exterieur() {
   int druk;
-  Serial.print('.');
   if (actieve_touch) {
-    Serial.println('_');
-    Serial.print('_');
-    Serial.print(ts_x);
-    Serial.print("; ");
-    Serial.print(ts_y);
     druk = klik(ts_x, ts_y);
-    Serial.print(": ");
-    Serial.print(druk);
 
     if (druk > -1){
       exterieurscherm_schakel(druk);
@@ -218,9 +210,12 @@ void run_exterieur() {
     } else if (ts_y < 30) {
       klik_header(ts_x, ts_y);
     }
-
-    
   }
+  if (io_runned) {
+    io_runned = false;
+    exterieur_symbolen_verlichting(ext_x, ext_y);
+  }
+  
   ts_begin(); 
 }
 
@@ -311,11 +306,12 @@ void exterieurscherm_schakel(int knop) {
     }
   }
   exterieur_symbolen_verlichting(ext_x, ext_y);
-  io();
-  exterieur_symbolen_verlichting(ext_x, ext_y);
-  delay(50);
-  io();
-  exterieur_symbolen_verlichting(ext_x, ext_y);
+  io_now = true;
+  // io();
+  // exterieur_symbolen_verlichting(ext_x, ext_y);
+  // delay(50);
+  // io();
+  // exterieur_symbolen_verlichting(ext_x, ext_y);
 }
 
 void exterieur_verlichting_uit(){
