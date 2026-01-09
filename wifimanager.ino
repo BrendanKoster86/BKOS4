@@ -25,7 +25,6 @@ void wifimanager() {
   WiFiManager wm;
 
   wm.setDebugOutput(false);
-
   // wm.resetSettings();
 
   wm.setSaveConfigCallback(saveConfigCallback);
