@@ -7,7 +7,7 @@
     void ts_setup(){
       spi_ts.begin(TS_SCK, TS_MISO, TS_MOSI, TS_CS);
       ts_begin();
-      ts.setRotation(2);
+      ts.setRotation(0);
     }
 #elif HARDWARE == 3
   void ts_begin(){

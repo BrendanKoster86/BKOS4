@@ -75,7 +75,7 @@
     #define ROTATIE 0
   #endif
 #elif HARDWARE == 2
-  #define ROTATIE 0
+  #define ROTATIE 1
 #else
   #define ROTATIE 0
 #endif

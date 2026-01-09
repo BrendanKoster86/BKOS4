@@ -20,7 +20,7 @@ char telefoon[25] = "telefoon";
 // #define scherm_ili 9341  //  9341  of  9488
 #define RESOLUTIE 4880   //  2432  of  3248 4880
 
-#define ORIENTATIE 0 // 1 staand, 0 liggend
+#define ORIENTATIE 1 // 1 staand, 0 liggend
 
 #define use_freeRTOS 1  // 1 voor het gebruik fan freeRTOS
 
