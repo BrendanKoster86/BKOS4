@@ -9,15 +9,23 @@ void ota_git_update() {
   tft.println("\nStarting ESP32 OTA Update");
 
   connectToWiFi();
+  delay(1000);
   tft.println("Device is ready.");
   tft.println("Current Firmware Version: " + String(BKOS_VERSIE));
   if (checkForFirmwareUpdate()) {
+    tft.setCursor(0, 0);
     tft.println("BKOS update beschikbaar");
     tft.print("  ");
     tft.print(BKOS_VERSIE);
     tft.print(" > ");
     tft.println(BKOS_VERSIE_GIT);
-    downloadAndApplyFirmware();
+    delay(5000);
+    // downloadAndApplyFirmware();
+  } else {
+    tft.setCursor(0, 0);
+    tft.println("Gevonden op github:");
+    tft.println(BKOS_VERSIE_GIT);
+    delay(5000);
   }
 }
 
@@ -37,6 +45,11 @@ bool checkForFirmwareUpdate() {
 
   // Step 1: Fetch the latest version from GitHub
   BKOS_VERSIE_GIT = fetchLatestVersion();
+  tft.setTextColor(tft.color565(255, 0, 0));
+  tft.print("\n");
+  tft.println(BKOS_VERSIE_GIT);
+  tft.setTextColor(tft.color565(255, 255, 255));
+  delay(5000);
   if (BKOS_VERSIE_GIT == "") {
     return false;
   }
@@ -58,6 +71,9 @@ String fetchLatestVersion() {
   int httpCode = http.GET();
   if (httpCode == HTTP_CODE_OK) {
     String latestVersion = http.getString();
+    tft.setCursor(0,0);
+    tft.println(latestVersion);
+    delay(2500);
     latestVersion.trim();  // Remove any extra whitespace
     http.end();
     return latestVersion;

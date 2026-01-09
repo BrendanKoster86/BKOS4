@@ -32,7 +32,7 @@ bool io_now = false;
 
 void setup() {
   Serial.begin(9600);
-  delay(50);
+  delay(5000);
  
   // Note: The Adafruit librarys is not setting the backlight on, so we need to do that in code', flash size: 16mb, PSRAM: OPI PSRAM
   tft_setup();
@@ -46,7 +46,8 @@ void setup() {
 
   scherm_touched = millis();
 
-  ota_git_update();
+  ota_setup();
+  delay(15000);
 
 #if use_freeRTOS == 1
   tft.println("");
@@ -64,12 +65,12 @@ void setup() {
   delay(500);
   xTaskCreatePinnedToCore(wifiTask,
     "WIFI",
-    2048,
+    20480,
     NULL,
     1,
     NULL,
     1);
-  // delay(1000);
+  
   tft.println("done");
   tft.println("exit setup");
   
@@ -80,7 +81,7 @@ void setup() {
 void wifiLoop() {
   if (millis() > ota_git_check + ota_git_interval) {
     ota_wifi_update();
-    ota_git_update();
+    // ota_git_update();
     ota_git_check = millis();
   } else if (millis() > ota_wifi_check + ota_wifi_interval){
     ota_wifi_update();
