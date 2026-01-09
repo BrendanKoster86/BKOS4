@@ -22,6 +22,7 @@ unsigned long ota_wifi_check = 0;
 
 int SCRIPT_RESOLUTIE = 2432;
 bool io_now = false;
+bool updaten = false;
 
 #include "hardware.h"
 #include "diverse.h"
@@ -32,22 +33,18 @@ bool io_now = false;
 
 void setup() {
   Serial.begin(9600);
-  delay(5000);
  
   // Note: The Adafruit librarys is not setting the backlight on, so we need to do that in code', flash size: 16mb, PSRAM: OPI PSRAM
   tft_setup();
   
   tft.fillScreen(kleur_zwart);
-  delay(1000);
   BKOS_boot();
-  delay(1000);
   
   digitalWrite(TFT_BL, HIGH);
 
   scherm_touched = millis();
 
   ota_setup();
-  delay(15000);
 
 #if use_freeRTOS == 1
   tft.println("");
@@ -62,7 +59,6 @@ void setup() {
     1);
 
   tft.println("startwifiTask");
-  delay(500);
   xTaskCreatePinnedToCore(wifiTask,
     "WIFI",
     20480,
@@ -100,43 +96,44 @@ void ioLoop(){
 }
 
 void guiLoop(){
-  if (scherm_actief) {
-    ts_begin();
-    if (ts_touched()) {
-      scherm_touched = millis();
-      actieve_touch = true;
-      ts_x = touch_x();
-      ts_y = touch_y();
-      // fillCircle(ts_x, ts_y, 10, kleur_wit);
-    } else {
-      actieve_touch = false;
-    }
-
-    if ((millis() > scherm_touched + scherm_timer*1000) || (millis() < scherm_touched)) {
-      scherm_actief = false;
-      digitalWrite(TFT_BL, LOW);
-    } else {
-      app_uitvoeren();
-      if (millis() > klok_getekend + 5000) {
-        // klok_update();
-        header_plaatsen();
-      }
-    }
-
-  } else {
-    ts_begin();
-    if (ts_touched()) {
+  if (!updaten) {
+    if (scherm_actief) {
       ts_begin();
-      while (ts_touched()) {
-        delay(50);
-        ts_begin();
+      if (ts_touched()) {
+        scherm_touched = millis();
+        actieve_touch = true;
+        ts_x = touch_x();
+        ts_y = touch_y();
+        // fillCircle(ts_x, ts_y, 10, kleur_wit);
+      } else {
+        actieve_touch = false;
       }
-      digitalWrite(TFT_BL, HIGH);
-      scherm_actief = true;
-      scherm_touched = millis();
-      
+
+      if ((millis() > scherm_touched + scherm_timer*1000) || (millis() < scherm_touched)) {
+        scherm_actief = false;
+        digitalWrite(TFT_BL, LOW);
+      } else {
+        app_uitvoeren();
+        if (millis() > klok_getekend + 5000) {
+          // klok_update();
+          header_plaatsen();
+        }
+      }
+
+    } else {
+      ts_begin();
+      if (ts_touched()) {
+        ts_begin();
+        while (ts_touched()) {
+          delay(50);
+          ts_begin();
+        }
+        digitalWrite(TFT_BL, HIGH);
+        scherm_actief = true;
+        scherm_touched = millis();
+        
+      }
     }
-    
   }
 }
 

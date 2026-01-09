@@ -6,27 +6,27 @@
 // unsigned long lastUpdateCheck = 0;
 
 void ota_git_update() {
-  tft.println("\nStarting ESP32 OTA Update");
+  // tft.println("\nStarting ESP32 OTA Update");
 
   connectToWiFi();
   delay(1000);
-  tft.println("Device is ready.");
-  tft.println("Current Firmware Version: " + String(BKOS_VERSIE));
+
   if (checkForFirmwareUpdate()) {
-    tft.setCursor(0, 0);
-    tft.println("BKOS update beschikbaar");
-    tft.print("  ");
+    updaten = true;
+    delay(500);
+    tft.fillScreen(kleur_zwart);
+    bkos_logo(10, 10, kleur_donker);
+    tft.setCursor(300, 10);
+    tft.setTextSize(3);
+    tft.setTextColor(kleur_groen);
+    tft.println("BKOS update");
+    tft.setTextColor(kleur_beige);
+    tft.setCursor(300, 70);
     tft.print(BKOS_VERSIE);
     tft.print(" > ");
     tft.println(BKOS_VERSIE_GIT);
-    delay(5000);
     downloadAndApplyFirmware();
-  } else {
-    tft.setCursor(0, 0);
-    tft.println("Gevonden op github:");
-    tft.println(BKOS_VERSIE_GIT);
-    delay(5000);
-  }
+  } 
 }
 
 // void loop() {
@@ -37,19 +37,14 @@ void ota_git_update() {
 
 
 bool checkForFirmwareUpdate() {
-  tft.println("Checking for firmware update...");
+  // tft.println("Checking for firmware update...");
   if (WiFi.status() != WL_CONNECTED) {
-    tft.println("WiFi not connected");
+    // tft.println("WiFi not connected");
     return false;
   }
 
   // Step 1: Fetch the latest version from GitHub
   BKOS_VERSIE_GIT = fetchLatestVersion();
-  tft.setTextColor(tft.color565(255, 0, 0));
-  tft.print("\n");
-  tft.println(BKOS_VERSIE_GIT);
-  tft.setTextColor(tft.color565(255, 255, 255));
-  delay(5000);
   if (BKOS_VERSIE_GIT == "") {
     return false;
   }
@@ -71,9 +66,6 @@ String fetchLatestVersion() {
   int httpCode = http.GET();
   if (httpCode == HTTP_CODE_OK) {
     String latestVersion = http.getString();
-    tft.setCursor(0,0);
-    tft.println(latestVersion);
-    delay(2500);
     latestVersion.trim();  // Remove any extra whitespace
     http.end();
     return latestVersion;
@@ -90,11 +82,11 @@ void downloadAndApplyFirmware() {
   http.begin(firmwareUrl);
 
   int httpCode = http.GET();
-  tft.printf("HTTP GET code: %d\n", httpCode);
+  // tft.printf("HTTP GET code: %d\n", httpCode);
 
   if (httpCode == HTTP_CODE_OK) {
     int contentLength = http.getSize();
-    tft.printf("Firmware size: %d bytes\n", contentLength);
+    // tft.printf("Firmware size: %d bytes\n", contentLength);
 
     if (contentLength > 0) {
       WiFiClient* stream = http.getStreamPtr();
@@ -116,13 +108,13 @@ void downloadAndApplyFirmware() {
 
 
 bool startOTAUpdate(WiFiClient* client, int contentLength) {
-  tft.println("Initializing update...");
+  // tft.println("Initializing update...");
   if (!Update.begin(contentLength)) {
     tft.printf("Update begin failed: %s\n", Update.errorString());
     return false;
   }
 
-  tft.println("Writing firmware...");
+  // tft.println("Writing firmware...");
   size_t written = 0;
   int progress = 0;
   int lastProgress = 0;
@@ -131,6 +123,8 @@ bool startOTAUpdate(WiFiClient* client, int contentLength) {
   const unsigned long timeoutDuration = 120*1000;  // 10 seconds timeout
   unsigned long lastDataTime = millis();
 
+  tft.setTextColor(kleur_beige);
+  tft.setTextSize(5);
   while (written < contentLength) {
     if (client->available()) {
       uint8_t buffer[128];
@@ -142,7 +136,9 @@ bool startOTAUpdate(WiFiClient* client, int contentLength) {
         // Calculate and print progress
         progress = (written * 100) / contentLength;
         if (progress != lastProgress) {
-          tft.printf("Writing Progress: %d%%\n", progress);
+          tft.fillRect(300, 120, 200, 200, kleur_zwart);
+          tft.setCursor(350, 125);
+          tft.printf("%d%%\n", progress);
           lastProgress = progress;
         }
       }
@@ -156,6 +152,10 @@ bool startOTAUpdate(WiFiClient* client, int contentLength) {
 
     yield();
   }
+  tft.setTextColor(kleur_wit);
+  tft.setTextSize(2);
+  tft.print('\n');
+  
   tft.println("\nWriting complete");
 
   if (written != contentLength) {
@@ -169,6 +169,6 @@ bool startOTAUpdate(WiFiClient* client, int contentLength) {
     return false;
   }
 
-  tft.println("Update successfully completed");
+  tft.println("Update geslaagd");
   return true;
 }
