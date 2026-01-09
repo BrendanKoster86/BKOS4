@@ -44,6 +44,8 @@ void setup() {
 
   scherm_touched = millis();
 
+  ota_git_update();
+
 #if use_freeRTOS == 1
   tft.println("");
   tft.println("start ioTask");

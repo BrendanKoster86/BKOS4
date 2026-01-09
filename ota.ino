@@ -1,6 +1,4 @@
-#include <WiFi.h>
-#include <HTTPClient.h>
-#include <Update.h>
+
 
 
 // // Current firmware version
@@ -16,7 +14,7 @@ void ota_git_update() {
   if (checkForFirmwareUpdate()) {
     tft.println("BKOS update beschikbaar");
     tft.print("  ");
-    tft.print(BKOS_VERSIE)
+    tft.print(BKOS_VERSIE);
     tft.print(" > ");
     tft.println(BKOS_VERSIE_GIT);
     downloadAndApplyFirmware();
@@ -48,12 +46,12 @@ bool checkForFirmwareUpdate() {
 
   // Step 1: Fetch the latest version from GitHub
   BKOS_VERSIE_GIT = fetchLatestVersion();
-  if (latestVersion == "") {
+  if (BKOS_VERSIE_GIT == "") {
     return false;
   }
 
   // Step 2: Compare versions
-  if (latestVersion != BKOS_VERSIE) {
+  if (BKOS_VERSIE_GIT != BKOS_VERSIE) {
     return true;
     // tft.println("New firmware available. Starting OTA update...");
     // downloadAndApplyFirmware();
