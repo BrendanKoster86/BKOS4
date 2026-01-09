@@ -10,16 +10,16 @@
 #include "info.h"
 #include "ota.h"
 
-#define BKOS_VERSIE "4.T260107"
+#define BKOS_VERSIE "4.T260109"
 
 void BKOS_boot();
 
 unsigned int klok_getekend = 0;
 
 #if HARDWARE == 5
-  const char* firmwareUrl = "https://github.com/BrendanKoster86/BKOS4/blob/main/build/esp32.esp32.esp32s3/BKOS4.ino.bin";
-  const char* versionUrl = "https://raw.githubusercontent.com/BrendanKoster86/BKOS4/blob/main/firmware/versie5.txt";
+  const char* firmwareUrl = "https://raw.githubusercontent.com/BrendanKoster86/BKOS4/main/build/esp32.esp32.esp32s3/BKOS4.ino.bin";
+  const char* versionUrl = "https://raw.githubusercontent.com/BrendanKoster86/BKOS4/main/firmware/versie5.txt";
 #else
   const char* firmwareUrl = "https://github.com/BrendanKoster86/BKOS4/blob/main/firmware/firmware.ino.bin";
-  const char* versionUrl = "https://raw.githubusercontent.com/BrendanKoster86/BKOS4/blob/main/firmware/versie.txt";
+  const char* versionUrl = "https://raw.githubusercontent.com/BrendanKoster86/BKOS4/main/firmware/versie.txt";
 #endif

@@ -20,7 +20,7 @@ void ota_git_update() {
     tft.print(" > ");
     tft.println(BKOS_VERSIE_GIT);
     delay(5000);
-    // downloadAndApplyFirmware();
+    downloadAndApplyFirmware();
   } else {
     tft.setCursor(0, 0);
     tft.println("Gevonden op github:");
