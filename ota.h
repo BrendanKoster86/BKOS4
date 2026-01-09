@@ -2,8 +2,8 @@
 #include <HTTPClient.h>
 #include <Update.h>
 
-void ota_git_update();
-bool checkForFirmwareUpdate();
-void downloadAndApplyFirmware();
+void connectToWiFi();
 
-String BKOS_VERSIE_GIT = "";
+#include "ota_git.h"
+#include "ota_wifi.h"
+

@@ -15,8 +15,10 @@
 
 #define use_freeRTOS 1  // 1 voor het gebruik fan freeRTOS
 
-const unsigned long ota_interval = 5 * 60 * 1000;  // 5 minutes in milliseconds
-unsigned long ota_check = 0;
+const unsigned long ota_git_interval = 5 * 60 * 1000;  // 5 minuten in milliseconds
+unsigned long ota_git_check = 0;
+const unsigned long ota_wifi_interval = 3  * 1000;  // 5 seconde in milliseconds
+unsigned long ota_wifi_check = 0;
 
 int SCRIPT_RESOLUTIE = 2432;
 bool io_now = false;
@@ -76,9 +78,13 @@ void setup() {
 
 
 void wifiLoop() {
-  if (millis() > ota_check + ota_interval) {
-    ota_git_update;
-    ota_check = millis();
+  if (millis() > ota_git_check + ota_git_interval) {
+    ota_wifi_update();
+    ota_git_update();
+    ota_git_check = millis();
+  } else if (millis() > ota_wifi_check + ota_wifi_interval){
+    ota_wifi_update();
+    ota_wifi_check = millis();
   }
 }
 

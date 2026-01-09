@@ -10,7 +10,7 @@
 #include "info.h"
 #include "ota.h"
 
-#define BKOS_VERSIE "4.T260107"
+#define BKOS_VERSIE "4.T260109"
 
 void BKOS_boot();
 
