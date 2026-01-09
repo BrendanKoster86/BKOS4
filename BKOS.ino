@@ -32,12 +32,15 @@ void BKOS_boot(){
   char c = ' ';
   while (Serial.available()) {
     c = Serial.read();
-    tft.print(c);
+    // tft.print(c);
     if (!Serial.available()){
       delay(20);
     }
   }
-  tft.println("");
+  // tft.println("");
+  if (RESOLUTIE == 4880) {
+    tft.setCursor(0, 0);
+  }
   tft.setTextColor(tft.color565(255, 255, 255));
 
   tft.print("  AT S?  ");

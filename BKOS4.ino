@@ -1,5 +1,14 @@
 #include <SPI.h>
 
+#define JSON_CONFIG_FILE "/bkos4_config.json"
+bool shouldSaveConfig = false;
+
+char bootnaam[25] = "bootnaam";
+char haven[25]    = "haven";
+char eigenaar[25] = "eigenaar";
+char telefoon[25] = "telefoon";
+
+
 // Selectie gebruikte hardware (tzt kijken of dit automatisch kan)
 #define HARDWARE 5    // 0 : Raspberry pi pico (2) + ESP8266 s01
                       // 1 : Raspberry pi pico (2)W
@@ -33,11 +42,14 @@ bool updaten = false;
 
 void setup() {
   Serial.begin(9600);
- 
-  // Note: The Adafruit librarys is not setting the backlight on, so we need to do that in code', flash size: 16mb, PSRAM: OPI PSRAM
+
   tft_setup();
+
+  wifimanager();
   
   tft.fillScreen(kleur_zwart);
+ 
+  // Note: The Adafruit librarys is not setting the backlight on, so we need to do that in code', flash size: 16mb, PSRAM: OPI PSRAM
   BKOS_boot();
   
   digitalWrite(TFT_BL, HIGH);

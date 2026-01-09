@@ -9,10 +9,15 @@
 #include "apps.h"
 #include "info.h"
 #include "ota.h"
+#include "wifimanager.h"
 
-#define BKOS_VERSIE "4.T260109"
+#define BKOS_VERSIE "4.T260109b"
 
 void BKOS_boot();
+
+
+
+  
 
 unsigned int klok_getekend = 0;
 
