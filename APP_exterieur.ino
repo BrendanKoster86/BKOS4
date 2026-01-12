@@ -72,7 +72,7 @@ void bouw_exterieur() {
   
   exterieur_teken_boot(ext_x, ext_y, kleur_groen);
   exterieur_symbolen_verlichting(ext_x, ext_y);
-
+  interieur_verlichting();
 }
 
 void exterieur_teken_boot(int32_t x, int32_t y, uint32_t kleur){
@@ -221,59 +221,64 @@ void run_exterieur() {
 
 void exterieurscherm_schakel(int knop) {
   if (knop > 3) {
-    if (knoppen_status[knop] == 0) {
-      // uit wordt aan
-      knoppen_status[knop] = 1;
-      exterieurscherm_status[knop] = 1;
-      for (int i = 0; i < io_knoppen_cnt; i++){
-        int j = 0;
-        bool fl = false;
-        bool stp = false;
-        while (!stp){
-          if (io_namen[io_knoppen[i]][j] == knoppen_tekst[knop][j]) {
-            stp = false;
-          } else {
-            fl = true;
-            stp = true;
+    if (charstrip(exterieur_knoppen_namen[knop]) == "**I_licht") {
+      interieur_verlichting(true);
+      exterieurscherm_status[knop] = interieur_licht_variant;
+    } else {
+      if (knoppen_status[knop] == 0) {
+        // uit wordt aan
+        knoppen_status[knop] = 1;
+        exterieurscherm_status[knop] = 1;
+        for (int i = 0; i < io_knoppen_cnt; i++){
+          int j = 0;
+          bool fl = false;
+          bool stp = false;
+          while (!stp){
+            if (io_namen[io_knoppen[i]][j] == knoppen_tekst[knop][j]) {
+              stp = false;
+            } else {
+              fl = true;
+              stp = true;
+            }
+            if (j >= 9){
+              stp = true;
+            }
+            j++;
           }
-          if (j >= 9){
-            stp = true;
+          if (!fl) {
+            if ((io_output[io_knoppen[i]] == 0) || (io_output[io_knoppen[i]] == 1)){
+              io_output[io_knoppen[i]] = 1;
+            } else if ((io_output[io_knoppen[i]] == 2) || (io_output[io_knoppen[i]] == 3)){
+              io_output[io_knoppen[i]] = 3;
+            }
           }
-          j++;
         }
-        if (!fl) {
-          if ((io_output[io_knoppen[i]] == 0) || (io_output[io_knoppen[i]] == 1)){
-            io_output[io_knoppen[i]] = 1;
-          } else if ((io_output[io_knoppen[i]] == 2) || (io_output[io_knoppen[i]] == 3)){
-            io_output[io_knoppen[i]] = 3;
+      } else{
+        // aan wordt uit
+        knoppen_status[knop] = 0;
+        exterieurscherm_status[knop] = 0;
+        for (int i = 0; i < io_knoppen_cnt; i++){
+          int j = 0;
+          bool fl = false;
+          bool stp = false;
+          while (!stp){
+            if (io_namen[io_knoppen[i]][j] == knoppen_tekst[knop][j]) {
+              stp = false;
+            } else {
+              fl = true;
+              stp = true;
+            }
+            if (j >= 9){
+              stp = true;
+            }
+            j++;
           }
-        }
-      }
-    } else{
-      // aan wordt uit
-      knoppen_status[knop] = 0;
-      exterieurscherm_status[knop] = 0;
-      for (int i = 0; i < io_knoppen_cnt; i++){
-        int j = 0;
-        bool fl = false;
-        bool stp = false;
-        while (!stp){
-          if (io_namen[io_knoppen[i]][j] == knoppen_tekst[knop][j]) {
-            stp = false;
-          } else {
-            fl = true;
-            stp = true;
-          }
-          if (j >= 9){
-            stp = true;
-          }
-          j++;
-        }
-        if (!fl) {
-          if ((io_output[io_knoppen[i]] == 0) || (io_output[io_knoppen[i]] == 1)){
-            io_output[io_knoppen[i]] = 0;
-          } else if ((io_output[io_knoppen[i]] == 2) || (io_output[io_knoppen[i]] == 3)){
-            io_output[io_knoppen[i]] = 2;
+          if (!fl) {
+            if ((io_output[io_knoppen[i]] == 0) || (io_output[io_knoppen[i]] == 1)){
+              io_output[io_knoppen[i]] = 0;
+            } else if ((io_output[io_knoppen[i]] == 2) || (io_output[io_knoppen[i]] == 3)){
+              io_output[io_knoppen[i]] = 2;
+            }
           }
         }
       }
@@ -297,12 +302,16 @@ void exterieurscherm_schakel(int knop) {
     }
     if (knop == 0) {
       exterieur_verlichting_uit();
+      interieur_verlichting();
     } else if (knop == 1) {
       exterieur_zeilverlichting();
+      interieur_verlichting();
     } else if (knop == 2) {
       exterieur_motorverlichting();
+      interieur_verlichting();
     } else if (knop == 3) {
       exterieur_ankerverlichting();
+      interieur_verlichting();
     }
   }
   exterieur_symbolen_verlichting(ext_x, ext_y);
@@ -454,3 +463,80 @@ void exterieur_ankerverlichting(){
   }
 }
 
+void interieur_verlichting() {
+  interieur_verlichting(false);
+}
+
+void interieur_verlichting(bool schakelen) {
+  if (schakelen) {
+    interieur_licht_variant ++;
+  }
+  if (interieur_licht_variant >= 4) {
+    interieur_licht_variant = 0;
+  }
+  // tft.fillRect(10, 30, 100, 30, kleur_zwart);
+  // tft.setTextColor(kleur_wit);
+  // tft.setCursor(10, 31);
+  // tft.print(interieur_licht_variant);
+
+  int wit = 0;
+  int rood = 0;
+
+  if (interieur_licht_variant == 0) {
+    wit = 0;
+    rood = 0;
+  } else if (interieur_licht_variant == 1) {
+    wit = 1;
+    rood = 0;
+  } else if (interieur_licht_variant == 2) {
+    wit = 0;
+    rood = 1;
+  } else if (interieur_licht_variant == 3) {
+    for (int i = 0; i < sizeof(exterieurscherm_status); i++) {
+      if (exterieurscherm_status[i] == 1) {
+        if (charstrip(exterieur_knoppen_namen[i]) == "**haven") {
+          // tft.print("haven");
+          wit = 1;
+          rood = 0;
+        } else if (charstrip(exterieur_knoppen_namen[i]) == "**zeilen") {
+          // tft.print("zeilen");
+          wit = 0;
+          rood = 1;
+        } else if (charstrip(exterieur_knoppen_namen[i]) == "**motor") {
+          // tft.print("motor");
+          wit = 0;
+          rood = 1;
+        } else if (charstrip(exterieur_knoppen_namen[i]) == "**anker") {
+          // tft.print("anker");
+          wit = 1;
+          rood = 0;
+        // } else {
+        //   tft.print(i);
+        //   tft.print("[");
+        //   tft.print(charstrip(exterieur_knoppen_namen[i]));
+        //   tft.print("]");
+        }
+      }
+    }
+  }
+
+  for (int knop = 0; knop < io_knoppen_cnt; knop++){
+    if (io_namen[io_knoppen[knop]] == "**IL_wit "){
+      io_output[io_knoppen[knop]] = wit;
+    } else if (io_namen[io_knoppen[knop]] == "**IL_rood"){
+      io_output[io_knoppen[knop]] = rood;
+    }
+  }
+}
+
+
+String charstrip(char invoer[]) {
+  String uitvoer = "";
+  for (int i = 0; i < 10; i++){
+    if (invoer[i] != ' '){
+      uitvoer += invoer[i];
+    }
+  }
+  uitvoer.trim();
+  return uitvoer;
+}
