@@ -43,21 +43,45 @@ void BKOS_boot(){
   }
   tft.setTextColor(tft.color565(255, 255, 255));
 
-  tft.print("  AT S?  ");
-  Serial.println("AT S?");
-  tft.setTextColor(tft.color565(0, 110, 0));
-  unsigned int laatste = millis();
-  while (c != '\n' && millis() < laatste + 5000) {
-    if (Serial.available()){
-      c = Serial.read();
-      tft.print(c);
-    }
+  Serial.flush();
+  Serial.print("AT S?");
+  delay(50);
+  BKOSS = "";
+  unsigned int start = millis();
+  while (!Serial.available() && millis() < start + 2500) {
+    delay(50);
   }
-  if (c == '\n') {
-    tft.println("");
-  } else {
+  if (Serial.available()) {
+    BKOSS = Serial.readStringUntil('\n');
+  }
+  
+  Serial.print("AT V?");
+  delay(50);
+  BKOSSV = "";
+  start = millis();
+  while (!Serial.available() && millis() < start + 2500) {
+    delay(50);
+  }
+  if (Serial.available()) {
+    BKOSSV = Serial.readStringUntil('\n');
+  }
+  
+
+  tft.print("  BKOSS  ");
+  tft.setTextColor(tft.color565(0, 110, 0));
+  tft.print(BKOSS);
+  tft.setTextColor(kleur_wit);
+  tft.print(" v ");
+  tft.setTextColor(tft.color565(0, 110, 0));
+  tft.print(BKOSSV);
+  
+  if (BKOSS == "" || BKOSSV == "") {
     tft.setTextColor(tft.color565(255, 0, 0));
-    tft.println("Helaas, niks gevonden");
+    tft.println("Helaas, ontvangst BKOSS module ging niet helemaal goed");
+    tft.println("          Dit is normaal wanneer je met UWB bent aangesloten");
+    tft.println("          Aangesloten via UTP? dan kan het zijn dat de interne kabel niet goed zit.");
+  } else {
+    tft.print('\n');
   }
   tft.setTextColor(tft.color565(255, 255, 255));
 

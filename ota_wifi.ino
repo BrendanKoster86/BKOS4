@@ -4,6 +4,7 @@ void ota_wifi_update() {
 
 
 void ota_wifi_setup() {
+  
   // // Configure the hostname
   // uint16_t maxlen = strlen("nameprefix") + 7;
   // char *fullhostname = new char[maxlen];
@@ -12,6 +13,8 @@ void ota_wifi_setup() {
   // snprintf(fullhostname, maxlen, "%s-%02x%02x%02x", "nameprefix", mac[3], mac[4], mac[5]);
   // ArduinoOTA.setHostname("fullhostname");
   // delete[] fullhostname;
+
+  
 
   // connectToWiFi();
 
@@ -39,6 +42,7 @@ void ota_wifi_setup() {
   ArduinoOTA
     .onStart([]() {
       String type;
+      digitalWrite(TFT_BL, HIGH);
       if (ArduinoOTA.getCommand() == U_FLASH)
         type = "sketch";
       else // U_SPIFFS
@@ -46,12 +50,28 @@ void ota_wifi_setup() {
 
       // NOTE: if updating SPIFFS this would be the place to unmount SPIFFS using SPIFFS.end()
       tft.println("Start updating " + type);
+      updaten = true;
+      tft.fillScreen(kleur_zwart);
+      bkos_logo(10, 10, kleur_donker);
+      tft.setCursor(300, 10);
+      tft.setTextSize(3);
+      tft.setTextColor(kleur_groen);
+      tft.println("BKOS update");
+      // unsigned int lastProgress = 0;
+      // unsigned int actProgress = 0;
+  
     })
     .onEnd([]() {
       tft.println("\nEnd");
     })
     .onProgress([](unsigned int progress, unsigned int total) {
-      tft.printf("Progress: %u%%\r", (progress / (total / 100)));
+      // actProgress = "%u%%\r", (progress / (total / 100));
+      if (true){//(actProgress != lastProgress) {
+          tft.fillRect(300, 120, 200, 200, kleur_zwart);
+          tft.setCursor(350, 125);
+          tft.printf("%u%%\r", (progress / (total / 100)));
+          // lastProgress = actProgress;
+        }
     })
     .onError([](ota_error_t error) {
       tft.printf("Error[%u]: ", error);
