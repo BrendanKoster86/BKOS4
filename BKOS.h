@@ -11,7 +11,7 @@
 #include "ota.h"
 #include "wifimanager.h"
 
-#define BKOS_VERSIE "4.T260112b"
+#define BKOS_VERSIE "4.T260113"
 String BKOSS;
 String BKOSSV;
 

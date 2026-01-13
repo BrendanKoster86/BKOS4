@@ -59,6 +59,30 @@ void knop_plaatsen(int knop_nummer, bool tekst) {
         fillCircle((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2), (knoppen_teken_positie[knop_nummer][1]+knoppen_teken_positie[knop_nummer][3]/2), 2, kleur_wit);
         // drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 15, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_zwart, icon_30_L_anker, sizeof(icon_30_L_anker)/sizeof(byte));
       }
+    } else if (charstrip(knoppen_tekst[knop_nummer]) == "**anker"){
+      // Anker
+      if (knoppen_status[knop_nummer] == 1){
+        drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 15, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_actief_groen, icon_30_M_anker, sizeof(icon_30_M_anker)/sizeof(byte));  
+      } else {
+        drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 15, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_zwart, icon_30_M_anker, sizeof(icon_30_M_anker)/sizeof(byte));
+      }
+      
+    } else if (charstrip(knoppen_tekst[knop_nummer]) == "**zeilen"){
+      // Anker
+      if (knoppen_status[knop_nummer] == 1){
+        drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 15, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_actief_groen, icon_30_M_zeilen, sizeof(icon_30_M_zeilen)/sizeof(byte));  
+      } else {
+        drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 15, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_zwart, icon_30_M_zeilen, sizeof(icon_30_M_zeilen)/sizeof(byte));
+      }
+      
+    } else if (charstrip(knoppen_tekst[knop_nummer]) == "**motor"){
+      // Anker
+      if (knoppen_status[knop_nummer] == 1){
+        drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 15, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_actief_groen, icon_30_M_motor, sizeof(icon_30_M_motor)/sizeof(byte));  
+      } else {
+        drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 15, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_zwart, icon_30_M_motor, sizeof(icon_30_M_motor)/sizeof(byte));
+      }
+      
     } else if ((knoppen_tekst[knop_nummer][2] == 'T') && (knoppen_tekst[knop_nummer][3] == 'B')) {
       uint32_t kleur = kleur_wit;
       if ((knoppen_tekst[knop_nummer][5] == 'r') && (knoppen_tekst[knop_nummer][6] == 'o') && (knoppen_tekst[knop_nummer][7] == 'o') && (knoppen_tekst[knop_nummer][8] == 'd')) {
