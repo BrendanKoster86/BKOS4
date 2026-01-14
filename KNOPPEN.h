@@ -14,6 +14,7 @@ char ** knoppen_tekst2;
 
 void knop_plaatsen(int knop_nummer);
 void knop_plaatsen(int knop_nummer, bool tekst2);
+void knop_plaatsen(int knop_nummer, bool tekst, uint16_t basis_kleur);
 
 void homeknop_plaatsen();
 void halve_homeknop_plaatsen();

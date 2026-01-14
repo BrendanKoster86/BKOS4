@@ -62,11 +62,12 @@ void bouw_exterieur() {
     knoppen_teken_positie[i] = exterieurscherm_knoppen_positie[i];
     knoppen_tekst[i] = exterieur_knoppen_namen[i];
     knoppen_status[i] = exterieurscherm_status[i];
-    knoppen_basiskleur[i] = schakelscherm_knoppen_kleur;
+    knoppen_basiskleur[i] = exterieruscherm_knoppen_kleur;
     knoppen_tekst_kleur[i] = schakelscherm_knoppen_tekst_kleur;
     
   }
   
+
   alle_knoppen_plaatsen();
 
   
@@ -196,7 +197,7 @@ void run_exterieur() {
 
     if (druk > -1){
       exterieurscherm_schakel(druk);
-      
+      knop_plaatsen(druk);
       io_wijziging = true;
     }
 
@@ -224,6 +225,8 @@ void exterieurscherm_schakel(int knop) {
     if (charstrip(exterieur_knoppen_namen[knop]) == "**I_licht") {
       interieur_verlichting(true);
       exterieurscherm_status[knop] = interieur_licht_variant;
+      knoppen_status[knop] = interieur_licht_variant;
+      // knop_plaatsen(knop);
     } else {
       if (knoppen_status[knop] == 0) {
         // uit wordt aan
@@ -283,7 +286,7 @@ void exterieurscherm_schakel(int knop) {
         }
       }
     }
-    knop_plaatsen(knop);
+    // knop_plaatsen(knop);
   } else {
     for (int i = 0; i < 4; i++) {
       if (i == knop) {
@@ -313,7 +316,9 @@ void exterieurscherm_schakel(int knop) {
       exterieur_ankerverlichting();
       interieur_verlichting();
     }
+    
   }
+  knop_plaatsen(knop);
   exterieur_symbolen_verlichting(ext_x, ext_y);
   io_now = true;
   // io();

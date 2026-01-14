@@ -3,7 +3,11 @@ void knop_plaatsen(int knop_nummer) {
 }
 
 void knop_plaatsen(int knop_nummer, bool tekst) {
-  fillRoundRect(knoppen_teken_positie[knop_nummer][0], knoppen_teken_positie[knop_nummer][1], knoppen_teken_positie[knop_nummer][2], knoppen_teken_positie[knop_nummer][3], 5, knoppen_basiskleur[knop_nummer][knoppen_status[knop_nummer]]);
+knop_plaatsen(knop_nummer, tekst, knoppen_basiskleur[knop_nummer][knoppen_status[knop_nummer]]);
+}
+
+void knop_plaatsen(int knop_nummer, bool tekst, uint16_t basis_kleur) {
+  fillRoundRect(knoppen_teken_positie[knop_nummer][0], knoppen_teken_positie[knop_nummer][1], knoppen_teken_positie[knop_nummer][2], knoppen_teken_positie[knop_nummer][3], 5, basis_kleur);
   // tft.fillRoundRect(int16_t x0, int16_t y0, int16_t w, int16_t h, int16_t radius, uint16_t color)
   if ((knoppen_tekst[knop_nummer][0] == '*') && (knoppen_tekst[knop_nummer][1] == '*')){
     if ((knoppen_tekst[knop_nummer][2] == 'U') && (knoppen_tekst[knop_nummer][3] == 'S') && (knoppen_tekst[knop_nummer][4] == 'B')){
@@ -81,6 +85,34 @@ void knop_plaatsen(int knop_nummer, bool tekst) {
         drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 15, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_actief_groen, icon_30_M_motor, sizeof(icon_30_M_motor)/sizeof(byte));  
       } else {
         drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 15, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_zwart, icon_30_M_motor, sizeof(icon_30_M_motor)/sizeof(byte));
+      }
+      
+    } else if (charstrip(knoppen_tekst[knop_nummer]) == "**haven"){
+      // Anker
+      if (knoppen_status[knop_nummer] == 1){
+        drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 15, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_geel, icon_30_M_zon, sizeof(icon_30_M_zon)/sizeof(byte));  
+        drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) + 5, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_actief_groen, icon_30_M_haven, sizeof(icon_30_M_haven)/sizeof(byte));
+        drawLine((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 5, knoppen_teken_positie[knop_nummer][1]+35, (knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) + 5, knoppen_teken_positie[knop_nummer][1]+5, kleur_actief_groen);
+      } else {
+        drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 15, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_geel, icon_30_M_zon, sizeof(icon_30_M_zon)/sizeof(byte));  
+        drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) + 5, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_zwart, icon_30_M_haven, sizeof(icon_30_M_haven)/sizeof(byte));
+        drawLine((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 5, knoppen_teken_positie[knop_nummer][1]+35, (knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) + 5, knoppen_teken_positie[knop_nummer][1]+5, kleur_zwart);
+      }
+    } else if (charstrip(knoppen_tekst[knop_nummer]) == "**I_licht"){
+      // Anker
+      if (knoppen_status[knop_nummer] == 3){
+        drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 15, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_wit, icon_30_IL_2K_1, sizeof(icon_30_IL_2K_1)/sizeof(byte));
+        drawIcon((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2) - 13, knoppen_teken_positie[knop_nummer][1]+5, 30, kleur_rood, icon_30_IL_2K_2, sizeof(icon_30_IL_2K_2)/sizeof(byte));
+      } else {
+        uint32_t kleur = kleur_wit;
+        if (knoppen_status[knop_nummer] == 0) {
+          kleur = kleur_zwart;
+        } else if (knoppen_status[knop_nummer] == 1) {
+          kleur = kleur_wit;
+        } else if (knoppen_status[knop_nummer] == 2) {
+          kleur = kleur_rood;
+        }
+        fillCircle((knoppen_teken_positie[knop_nummer][0]+knoppen_teken_positie[knop_nummer][2]/2), (knoppen_teken_positie[knop_nummer][1]+knoppen_teken_positie[knop_nummer][3]/2), 15, kleur);
       }
       
     } else if ((knoppen_tekst[knop_nummer][2] == 'T') && (knoppen_tekst[knop_nummer][3] == 'B')) {
