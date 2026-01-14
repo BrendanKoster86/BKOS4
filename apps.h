@@ -1,14 +1,20 @@
 // Includeer hier de header files van de aanwezige apps
 #include "BKOS_HOME.h"
 #include "BKOS_SCHAKEL.h"
+
+#include "ota.h"
+#include "wifimanager.h"
+
 #include "APP_exterieur.h"
 #include "APP_spellen.h"
 #include "APP_morse.h"
 
+
+
 // Geef aan hoeveel apps er zijn
-int app_cnt = 6;
+int app_cnt = 8;
 // Zet in de lijst hieronder de apps. De eerste positie is gereserveerd voor het thuisscherm, de eerste 8 daarna worden getoont op het thuisscherm
-void (*apps[])(String actie) = {thuisscherm, schakelscherm, exterieur, app_morse, spellen, instellingen};
+void (*apps[])(String actie) = {thuisscherm, schakelscherm, exterieur, app_morse, spellen, instellingen, update_center, wifimanager_app};
 // Het indexnummer van de app waarin wordt opgestart (als standaard, via de instellingen op de SD kaart kan dit worden overschreven.)
 int actieve_app = 2;
 

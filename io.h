@@ -2,7 +2,7 @@ void io();
 void io_reset_alert();
 void io_set_defaults();
 void io_schakel(int);
-void oi_boot();
+void io_boot();
 int io_output_status(byte);
 
 int io_cnt;

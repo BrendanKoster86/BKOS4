@@ -4,3 +4,4 @@
 #include <ArduinoJson.h> 
 
 void wifimanager();
+void wifimanager_app(String actie);

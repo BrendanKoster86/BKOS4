@@ -8,10 +8,8 @@
 #include "instellingen.h"
 #include "apps.h"
 #include "info.h"
-#include "ota.h"
-#include "wifimanager.h"
 
-#define BKOS_VERSIE "4.T260114"
+#define BKOS_VERSIE "4.T260114b"
 String BKOSS;
 String BKOSSV;
 
@@ -26,6 +24,8 @@ unsigned int klok_getekend = 0;
 #if HARDWARE == 5
   const char* firmwareUrl = "https://raw.githubusercontent.com/BrendanKoster86/BKOS4/main/build/esp32.esp32.esp32s3/BKOS4.ino.bin";
   const char* versionUrl = "https://raw.githubusercontent.com/BrendanKoster86/BKOS4/main/firmware/versie5.txt";
+  const char* firmware5Url = "https://raw.githubusercontent.com/BrendanKoster86/BKOS5/main/build/esp32.esp32.esp32s3/BKOS4.ino.bin";
+  const char* version5Url = "https://raw.githubusercontent.com/BrendanKoster86/BKOS5/main/firmware/versie5.txt";
 #else
   const char* firmwareUrl = "https://github.com/BrendanKoster86/BKOS4/blob/main/firmware/firmware.ino.bin";
   const char* versionUrl = "https://raw.githubusercontent.com/BrendanKoster86/BKOS4/main/firmware/versie.txt";

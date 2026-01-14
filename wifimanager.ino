@@ -1,3 +1,23 @@
+void wifimanager_app(String actie) {
+  if (actie == "bouw") {
+    wifimanager();
+  } else if (actie == "run") {
+    actieve_app = 0;
+    scherm_bouwen = true;
+  } else if (actie == "naam") {
+    item_naam = "WiFi Manager";
+  } else if (actie == "print") {
+    update_center("naam");
+    tft.print(item_naam);
+  } else if (actie == "icon_klein") {
+    int x = getCursorX() + 20;
+    int y = getCursorY() + 25;
+    setCursor(getCursorX(), getCursorY()+4);
+    drawIcon10x10(x, y, icon_wifi, kleur_zwart, 3);
+    tft.setTextColor(kleur_rood);
+  }
+}
+
 void wifimanager() {
   bool forceConfig = false;
 

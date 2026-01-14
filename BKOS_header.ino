@@ -220,8 +220,8 @@ void run_alert() {
 
 void klik_header(int x, int y) {
   if (x > 150) {
-    bouw_instellingen(true);
-    loop_instellingen();
+    actieve_app = 6;
+    scherm_bouwen = true;
   } else if (x < 100) {
     bouw_alert();
     run_alert();

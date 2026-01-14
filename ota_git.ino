@@ -69,7 +69,13 @@ bool checkForFirmwareUpdate() {
 
 String fetchLatestVersion() {
   HTTPClient http;
-  http.begin(versionUrl);
+  if (strncmp(BKOS_VERSIE, "4", 1) == 0) {
+    http.begin(versionUrl);
+  } else if (strncmp(BKOS_VERSIE, "5", 1) == 0) {
+    http.begin(version5Url);
+  } else {
+    http.begin(versionUrl);
+  }
 
   int httpCode = http.GET();
   if (httpCode == HTTP_CODE_OK) {
@@ -85,9 +91,25 @@ String fetchLatestVersion() {
 }
 
 void downloadAndApplyFirmware() {
+  if (strncmp(BKOS_VERSIE, "4", 1) == 0) {
+    downloadAndApplyFirmware(4);
+  } else if (strncmp(BKOS_VERSIE, "5", 1) == 0) {
+    downloadAndApplyFirmware(5);
+  } else {
+    downloadAndApplyFirmware(4);
+  }
+}
+
+void downloadAndApplyFirmware(byte BKOS) {
   HTTPClient http;
   http.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
-  http.begin(firmwareUrl);
+  if (BKOS == 4) {
+    http.begin(firmwareUrl);
+  } if (BKOS == 5) {
+    http.begin(firmware5Url);
+  } else {
+    http.begin(firmwareUrl);
+  }
 
   int httpCode = http.GET();
   // tft.printf("HTTP GET code: %d\n", httpCode);
@@ -179,4 +201,4 @@ bool startOTAUpdate(WiFiClient* client, int contentLength) {
 
   tft.println("Update geslaagd");
   return true;
-}
+}
