@@ -140,10 +140,13 @@ void guiLoop(){
           delay(50);
           ts_begin();
         }
+        delay(250);
         digitalWrite(TFT_BL, HIGH);
         scherm_actief = true;
+        delay(250);
+        ts_begin();
         scherm_touched = millis();
-        
+        actieve_touch - false;
       }
     }
   }
