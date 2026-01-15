@@ -9,7 +9,7 @@
 #include "apps.h"
 #include "info.h"
 
-#define BKOS_VERSIE "4.T260114b"
+#define BKOS_VERSIE "4.T260114c"
 String BKOSS;
 String BKOSSV;
 

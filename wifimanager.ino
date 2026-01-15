@@ -1,6 +1,6 @@
 void wifimanager_app(String actie) {
   if (actie == "bouw") {
-    wifimanager();
+    wifimanager(true);
   } else if (actie == "run") {
     actieve_app = 0;
     scherm_bouwen = true;
@@ -19,7 +19,11 @@ void wifimanager_app(String actie) {
 }
 
 void wifimanager() {
-  bool forceConfig = false;
+  wifimanager(false);
+}
+
+void wifimanager(bool forceConfig) {
+  // bool forceConfig = false;
 
   bool spiffsSetup = loadConfigFile();
   if (!spiffsSetup) {
@@ -33,14 +37,30 @@ void wifimanager() {
   tft.setTextColor(kleur_wit);
   tft.setTextSize(2);
   bkos_logo(scherm_x(240) - 210, 10, kleur_donker);
-  tft.println("Verbinden met WiFi . . .");
+  tft.println("    Verbinden met WiFi . . .");
   tft.println("    Ga met je telefoon naar het netwerk");
   tft.setTextSize(3);
   tft.setTextColor(kleur_beige);
   tft.println("               BKOS4");
   tft.setTextSize(2);
   tft.setTextColor(kleur_wit);
+  tft.println("    Ga vervolgens naar het volgende IP adres:");
+  tft.setTextSize(3);
+  tft.setTextColor(kleur_beige);
+  tft.println("            192.168.4.1");
+  tft.setTextSize(2);
+  tft.setTextColor(kleur_wit);
   tft.println("    om de juiste instellingen in te voeren");
+  tft.println("");
+  tft.setTextSize(3);
+  tft.println("            LETOP ! ! !");
+  tft.setTextColor(kleur_actief_rood);
+  tft.setTextSize(2);
+  tft.println("    Geef altijd de WiFi gegevens opnieuw op!");
+  tft.setTextColor(kleur_wit);  
+  tft.println("    anders gaat WiFi managr helaas niet verder.");
+  
+  loadConfigFile();
   
   WiFiManager wm;
 
@@ -61,8 +81,10 @@ void wifimanager() {
   wm.addParameter(&veld_eigenaar);
   wm.addParameter(&veld_telefoon);
 
-  
+
+
   if (forceConfig) {
+    wm.setConfigPortalTimeout(120);
     if (!wm.startConfigPortal("BKOS4")) {
       tft.println("Verbinding mislukt (startConfigPortal)");
       delay(3000);
