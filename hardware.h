@@ -73,6 +73,10 @@
     #define ROTATIE 3
   #elif ORIENTATIE == 0
     #define ROTATIE 0
+  #elif ORIENTATIE == 2
+    #define ROTATIE 2
+  #elif ORIENTATIE == 3
+    #define ROTATIE 3
   #endif
 #elif HARDWARE == 2
   #define ROTATIE 1

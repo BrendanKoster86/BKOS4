@@ -1,13 +1,17 @@
 void io();
 void io_reset_alert();
 void io_set_defaults();
-void io_schakel(int);
+void io_set_defaults(int standaard);
+void io_schakel(int knop);
 void io_boot();
 int io_output_status(byte);
 
 int io_cnt;
 int io_knoppen_cnt;
 int io_sensoren_cnt;
+
+byte aparaten [30]; // Gedetecteerde aparaten
+int aparaten_cnt = 0; // aantal aparaten
 
 unsigned long io_lost = 0;
 

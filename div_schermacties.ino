@@ -186,16 +186,26 @@ void gewaasd_scherm() {
 }
 
 void center_tekst(int16_t x, int16_t y, String tekst, int tekst_grootte=1, uint16_t tekst_kleur=tft.color565(255,255,255)) {
+  center_tekst(x, y, tekst, tekst_grootte, tekst_kleur, true);
+}
+
+// void center_tekst(int16_t x, int16_t y, String tekst, int tekst_grootte=1, uint16_t tekst_kleur=tft.color565(255,255,255), bool schalen=true) {
+  void center_tekst(int16_t x, int16_t y, String tekst, int tekst_grootte, uint16_t tekst_kleur, bool schalen) {
 
   x = scherm_x(x);
   y = scherm_y(y);
   
   int _tekst_grootte = 1;
-  for (int i = 1; i <= 20; i++){
-    if ((scherm_x(tekst_grootte) >= i) && (scherm_y(tekst_grootte) >= i)) {
-      _tekst_grootte = i;
+  if (schalen) {
+    for (int i = 1; i <= 20; i++){
+      if ((scherm_x(tekst_grootte) >= i) && (scherm_y(tekst_grootte) >= i)) {
+        _tekst_grootte = i;
+      }
     }
+  } else {
+    _tekst_grootte = tekst_grootte;
   }
+
 
   tft.setTextSize(_tekst_grootte);
   tft.setTextColor(tekst_kleur);

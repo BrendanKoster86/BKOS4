@@ -35,6 +35,7 @@ byte beeld_vraag(String hoofdmelding, String submelding, String optie1, String o
 byte beeld_vraag(String hoofdmelding, String submelding, byte opties_cnt, String optie1, String optie2, String optie3, String optie4, String optie5);
 void gewaasd_scherm();
 void center_tekst(int16_t x, int16_t y, String tekst, int tekst_grootte, uint16_t tekst_kleur);
+void center_tekst(int16_t x, int16_t y, String tekst, int tekst_grootte, uint16_t tekst_kleur, bool schalen);
 void run_scherm_pauze();
 
 

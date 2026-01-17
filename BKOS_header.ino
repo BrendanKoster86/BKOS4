@@ -10,23 +10,39 @@ void header_plaatsen() {
   } else if (RESOLUTIE == 3248) {
     center_tekst(100, 7, header_titel, 2, tft.color565(255, 255, 255)); 
   } else if (RESOLUTIE == 4880) {
-    center_tekst(100, 7, header_titel, 2, tft.color565(255, 255, 255)); 
+    center_tekst(100, 7, header_titel, 2, tft.color565(255, 255, 255), false); 
   }
-  klok_update();
+  klok_update(true);
   header_alert();
 }
 
 void klok_update() {
-  fillRect(160, 0, 45, header_vlak[3], kleur_zwart);
-  setCursor(190, 7);
-  tft.setTextSize(scherm_x(1));
-  tft.setTextColor(kleur_wit);
-  tft.print(tijd());
-  h_klok_millis = millis();
-  drawIcon10x10(225, 5, icon_instellingen, kleur_wit);
-  drawIconWifi10x10(175, 5);
-  drawIcon10x10(160, 5, icon_sd, sd_connect);
-  klok_getekend = millis();
+  klok_update(false);
+}
+
+void klok_update(bool force) {
+  String huidige_tijd = tijd();
+  if ((laatste_tijd != huidige_tijd) || (force)) {
+    laatste_tijd = huidige_tijd;
+    fillRect(160, 0, 45, header_vlak[3], kleur_zwart);
+    setCursor(190, 7);
+
+    int icon_tekst_grootte = scherm_x(1);
+    if (RESOLUTIE == 4880){
+      icon_tekst_grootte = 2;
+    } 
+
+    checkWiFi();
+
+    tft.setTextSize(icon_tekst_grootte);
+    tft.setTextColor(kleur_wit);
+    tft.print(huidige_tijd);
+    h_klok_millis = millis();
+    drawIcon10x10(225, 5, icon_instellingen, kleur_wit, icon_tekst_grootte);
+    drawIconWifi10x10(175, 5, icon_tekst_grootte);
+    drawIcon10x10(160, 5, icon_sd, sd_connect, icon_tekst_grootte);
+    klok_getekend = millis();
+  }
 }
 
 
@@ -99,13 +115,22 @@ void achtergrond(uint16_t kleur, bool plaats_home_knop, uint16_t home_knop_kleur
 }
 
 void header_alert() {
+  int icon_tekst_grootte = scherm_x(1);
+  if (RESOLUTIE == 4880){
+    icon_tekst_grootte = 2;
+  } 
+  header_alert(icon_tekst_grootte);
+}
+
+
+void header_alert(int icon_tekst_grootte) {
   if (io_alert_cnt > 0) {
     if (io_alert_app > 0) {
-      drawIcon10x10(5, 5, icon_bel, kleur_actief_rood);
+      drawIcon10x10(5, 5, icon_bel, kleur_actief_rood, icon_tekst_grootte);
     } else if (!io_diepcheck) {
-      drawIcon10x10(5, 5, icon_bel, tft.color565(255, 255, 0));
+      drawIcon10x10(5, 5, icon_bel, tft.color565(255, 255, 0), icon_tekst_grootte);
     } else {
-      drawIcon10x10(5, 5, icon_bel, kleur_oranje);
+      drawIcon10x10(5, 5, icon_bel, kleur_oranje, icon_tekst_grootte);
     }
     setCursor(header_vlak[0] + 3, header_vlak[1] + 5);
     tft.setTextSize(2);
@@ -114,38 +139,47 @@ void header_alert() {
     tft.setTextColor(kleur_wit);
     tft.print(io_alert_cnt);
   } else if (io_diepcheck_pins_cnt == 0) {
-    drawIcon10x10(5, 5, icon_bel, tft.color565(255, 0, 255));
+    drawIcon10x10(5, 5, icon_bel, tft.color565(255, 0, 255), icon_tekst_grootte);
   } else {
     fillRect(header_vlak[0], header_vlak[1], 20, header_vlak[3], kleur_zwart);
   }
 }
 
 void bouw_alert() {
+  int icon_tekst_grootte = scherm_x(1);
+  if (RESOLUTIE == 4880){
+    icon_tekst_grootte = 2;
+  } 
+  bouw_alert(icon_tekst_grootte);
+}
+
+void bouw_alert(int icon_tekst_grootte) {
   fillRect(0, 25, 240, 100, tft.color565(50, 50, 50));
   int h = 30;
   tft.setTextColor(kleur_wit);
   tft.setTextSize(1);
+  
   if (!wifi__aangesloten) {
-    drawIcon10x10(10, h-1, icon_wifi, tft.color565(100, 100, 100));
-    drawIcon10x10(10, h-1, icon_kruis, tft.color565(255, 0, 0));
+    drawIcon10x10(10, h-1, icon_wifi, tft.color565(100, 100, 100), icon_tekst_grootte);
+    drawIcon10x10(10, h-1, icon_kruis, tft.color565(255, 0, 0), icon_tekst_grootte);
     setCursor(24, h);
     tft.print("WiFi adapter niet aangesloten!");
     h += 15;
   }
   if (io_diepcheck_pins_cnt == 0) {
-    drawIcon10x10(10, h-1, icon_bel, tft.color565(255, 0, 255));
+    drawIcon10x10(10, h-1, icon_bel, tft.color565(255, 0, 255), icon_tekst_grootte);
     setCursor(25, h);
     tft.print("Geen diepcheck pins toegewezen !");
     h += 15;
   }
   if (!io_diepcheck) {
-    drawIcon10x10(10, h-1, icon_bel, tft.color565(0, 255, 255));
+    drawIcon10x10(10, h-1, icon_bel, tft.color565(0, 255, 255), icon_tekst_grootte);
     setCursor(25, h);
     tft.print("Diepcheck gefaald !");
     h += 15;
   }
   if (io_alert_cnt > 0) {
-    drawIcon10x10(10, h-1, icon_bel, kleur_oranje);
+    drawIcon10x10(10, h-1, icon_bel, kleur_oranje, icon_tekst_grootte);
     setCursor(25, h);
     tft.print(io_alert_cnt);
     tft.print(" open alert");
@@ -155,7 +189,7 @@ void bouw_alert() {
     h += 15;
   }
   if  (io_alert_app > 0){
-    drawIcon10x10(10, h-1, icon_bel, tft.color565(255, 0, 0));
+    drawIcon10x10(10, h-1, icon_bel, tft.color565(255, 0, 0), icon_tekst_grootte);
     setCursor(25, h);
     tft.print(io_alert_app);
     tft.print(" onverzonden triger");

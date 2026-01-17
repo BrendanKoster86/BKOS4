@@ -86,7 +86,6 @@ void BKOS_boot(){
   tft.setTextColor(tft.color565(255, 255, 255));
 
   io_boot();
-  io_set_defaults();
   // qr(120, 200, "brendanintech", 2)//, kleur_donker, kleur_licht);
   // qr(120, 200, "http://www.youtube.com/@brendanintech", 2, kleur_donker, kleur_licht);
   tft.println("");

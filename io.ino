@@ -1,3 +1,41 @@
+void io_boot() {
+  io_setup();  // Setup specifiek voor de computer
+  io_detect(); // Detecteren hardware op basis van de computer
+  bool done = false;
+  if (aparaten_cnt == 1) {
+    if (aparaten[0] == 130){
+      // Uitgaande van de basis test configuratie
+      tft.println("1 module configuratie'(2)");
+      io_set_defaults(2);
+      done = true;
+    }
+  } else if (aparaten_cnt == 2) {
+    if ((aparaten[0] == 130) && (aparaten[1] == 254)){
+      // Uitgaande van de basis test configuratie
+      tft.println("1 module configuratie'(2)");
+      io_set_defaults(2);
+      done = true;
+    } else if ((aparaten[0] == 130) && (aparaten[1] == 130)){
+      // Uitgaande van de basis 2 module test configuratie
+      tft.println("2 module configuratie'(3)");
+      io_set_defaults(3);
+      done = true;
+    }
+  } else if (aparaten_cnt == 3) {
+    if ((aparaten[0] == 130) && (aparaten[1] == 130) && (aparaten[2] == 130)){
+      // Configuratie Glory
+      tft.println("Configuratie voor de Glory (1)");
+      io_set_defaults(1);
+      done = true;
+    }
+  }
+  if (!done) {
+    tft.println("Geen configuratie gevonden.");
+    io_set_defaults();
+  }
+}
+
+
 String io_code_naar_naam(byte code){
   if (code == 2) {
     return "8 bit Logische module";
@@ -40,8 +78,8 @@ String io_code_naar_naam(byte code){
 
   bool io_verbonden = true;
 
-  void io_boot() {
-    io_detect();
+  void io_setup() {
+    return;
   }
 
   void io_detect() {
@@ -68,8 +106,8 @@ String io_code_naar_naam(byte code){
      * 147 : 16 bit Schakel module  |  16 knoppen
      * 
      */
-    int cnt = 0;
-    byte aparaten [30];
+    aparaten_cnt = 0;
+    
     int bit;
     int input;
     bool eind = false;
@@ -104,7 +142,7 @@ String io_code_naar_naam(byte code){
     while (!eind) {
       bit = 1;
       laatste = millis();
-      tft.print(cnt+1);
+      tft.print(aparaten_cnt+1);
       tft.print(": ");
       input = 0;
       
@@ -138,13 +176,13 @@ String io_code_naar_naam(byte code){
       } else if (input == 255){
         eind = true;
       } else {
-        aparaten[cnt] = input;
+        aparaten[aparaten_cnt] = input;
         tft.print(" (");
         tft.print(input);
         tft.print(") ");
-        cnt ++;
+        aparaten_cnt ++;
         bit = 1;
-        if (cnt >= 30) {
+        if (aparaten_cnt >= 30) {
           eind = true;
           tft.print("Te veel voor nu");
         }
@@ -157,7 +195,7 @@ String io_code_naar_naam(byte code){
       L = Serial.read();
     }
 
-    if (cnt == 0) {
+    if (aparaten_cnt == 0) {
       io_verbonden = false; // was false
       io_lost = millis();
       tft.print("Geen BKOSS module gevonden");
@@ -165,11 +203,14 @@ String io_code_naar_naam(byte code){
     } else {
       tft.println('-');
       tft.print("  ");
-      tft.print(cnt);
-      if (cnt == 1) {
+      tft.print(aparaten_cnt);
+      if (aparaten_cnt == 1) {
         tft.println(" Module gevonden");
       } else {
         tft.println(" Modules gevonden");
+      }
+      if (aparaten_cnt <= 2) {
+
       }
       tft.print("  ");
       delay(2500);
@@ -299,7 +340,7 @@ String io_code_naar_naam(byte code){
    * Dan kan er gelijk gebruik worden gemaakt van de standaard communicatie wat veel enorm vereenvoudigd.
    */
   
-  void io_boot() {
+  void io_setup() {
     pinMode(HC_PCK, OUTPUT);
     pinMode(HC_SCK, OUTPUT);
     pinMode(HC_IN, INPUT);
@@ -452,6 +493,12 @@ int io_output_status(byte output) {
 
 
 void io_set_defaults(){
+  io_set_defaults(2);
+  // io_set_defaults(EEPROM.read(616));
+  
+}
+
+void io_set_defaults(int standaard){
   /* Ik wil een aantal standaarden maken om de module voor het werken met de SD kaart toch flexiebel te maken in de testfase
    * Mijn streven is om op adres 616 van de EEPROM een cijfer op te slaan die refereert aan de gebruikte standaard
    * De standaarden die ik wil inbouwen zijn:
@@ -466,7 +513,7 @@ void io_set_defaults(){
    6: demo
    */
 
-   int standaard = 2;//EEPROM.read(616);
+  //  int standaard = 2;//EEPROM.read(616);
    tft.print("IO_standaard: ");
    tft.print(' ');
    tft.println(standaard);

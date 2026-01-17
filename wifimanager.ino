@@ -81,22 +81,24 @@ void wifimanager(bool forceConfig) {
   wm.addParameter(&veld_eigenaar);
   wm.addParameter(&veld_telefoon);
 
-
+  wifi__aangesloten = true;
 
   if (forceConfig) {
     wm.setConfigPortalTimeout(120);
     if (!wm.startConfigPortal("BKOS4")) {
       tft.println("Verbinding mislukt (startConfigPortal)");
       delay(3000);
-      ESP.restart();
-      delay(5000);
+      // ESP.restart();
+      // delay(5000);
+      wifi__aangesloten = false;
     }
   } else {
     if (!wm.autoConnect("BKOS4")) {
       tft.println("Verbinding mislukt (autoConnect)");
       delay(3000);
-      ESP.restart();
-      delay(5000);
+      wifi__aangesloten = false;
+      // ESP.restart();
+      // delay(5000);
     }
   }
 

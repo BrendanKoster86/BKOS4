@@ -94,6 +94,27 @@
         return map(ts.points[0].x, 500, 5, 0, 320);
       }
     #endif
+  #elif ORIENTATIE == 2
+    // TEST
+    #if HARDWARE == 4
+      int touch_x() {
+        ts.read();
+        return map(ts.points[0].y, 5, 480, 0, 240);
+      }
+      int touch_y() {
+        ts.read();
+        return map(ts.points[0].x, 275, 5, 0, 320);
+      }
+    #elif HARDWARE == 5
+      int touch_x() {
+        ts.read();
+        return map(ts.points[0].y, 800, 5, 240, 0);
+      }
+      int touch_y() {
+        ts.read();
+        return map(ts.points[0].x, 5, 500, 320, 0);
+      }
+    #endif
   #endif
 #else
   bool ts_touched(){

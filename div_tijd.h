@@ -1,3 +1,6 @@
+#include <NTPClient.h>
+#include <WiFiUdp.h>
+
 String tijd();
 String tijd(String wat);
 long millis_wekker(int H, int M);
@@ -13,3 +16,6 @@ int minuut;
 int seconde;
 String tijdzone;
 long tijd_millis;
+
+WiFiUDP ntpUDP;
+NTPClient timeClient(ntpUDP, "nl.pool.ntp.org", 3600, 3600);
