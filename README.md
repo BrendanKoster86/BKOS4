@@ -2,35 +2,39 @@ Englisch version below
 
 # NL
 
-## LETOP ! ! ! Deze versie van BKOS is nog lang niet af en zal daarom slechts beperkt functioneren.
-
-Doel van deze nieuwe versie is naast de Raspberry Pi Pico controllers ook de ESP32 als microcontroller te kunnen gebruiken, en ook de CYD (ESP32-2432S028R) of de grotere versies daarvan de ESP32-8048S043C en ESP34-8048S070C
-
-De software is nog vrij bassal en draait enkel als stand alone. Functionaliteit dat ik nog moet toevoegen (of bezig ben met toevoegen) zijn:
-- IO aansturing
-- SD kaart
-- WiFi
+## LETOP ! ! ! Deze versie van BKOS is nog lang niet af en zal daarom slechts beperkt functioneren.\
+\
+Doel van deze nieuwe versie is naast de Raspberry Pi Pico controllers ook de ESP32 als microcontroller te kunnen gebruiken, en ook de CYD (ESP32-2432S028R) of de grotere versies daarvan de ESP32-8048S043C en ESP34-8048S070C\
+\
+De software is nog vrij bassal en draait enkel als stand alone. Functionaliteit dat ik nog moet toevoegen (of bezig ben met toevoegen) zijn:\
+- IO aansturing\
+- SD kaart\
+- WiFi\
 
 ## Instructies
-Kies uw Microcontroller met een cijfer bij HARDWARE
-0 & 1 (RP Pico) geschikt voor PCB versies 0.2 en hoger
-3     (ESP 32)  geschikt voor PCB versies 0.4 en hoger, kiezen voor ESP32 Dev Module
-2     (CYD)     Kiezen voor ESP32_WROOM DA Module
-4 & 5           Kiezen voor ESP32S3 Dev Module, PSRAM -> OPI PSRAM, Flash Size -> 16 MB (128 Mb)
+Kies uw Microcontroller met een cijfer bij HARDWARE\
+0 & 1 (RP Pico) geschikt voor PCB versies 0.2 en hoger\
+3     (ESP 32)  geschikt voor PCB versies 0.4 en hoger, kiezen voor ESP32 Dev Module'\
+2     (CYD)     Kiezen voor ESP32_WROOM DA Module\
+4 & 5           Kiezen voor ESP32S3 Dev Module, PSRAM -> OPI PSRAM, Flash Size -> 16 MB (128 Mb)\
 
 Kies een resulutie bij RESULUTIE voor liggend in 10 pixels BBHH
 Dit moet de resolutie van het gebruikte scherm zijn, hier wordt naartoe geschaald
 
-Kies een orientie bij ORIENTATIE
-1 = Staand
-0 = Liggend
-Liggend werkt nog niet op alle schermen en is ook nu nog met name een uitgerekte versie van staand, maar hier wordt aan gewerkt
-
-
-ESP-eSPI  (met aanpassingen afhankelijk van de MCU en scherm)
-
-
-
+Kies een orientie bij ORIENTATIE\
+1 = Staand\
+0 = Liggend\
+Liggend werkt nog niet op alle schermen en is ook nu nog met name een uitgerekte versie van staand, maar hier wordt aan gewerkt\
+\
+ESP-eSPI  (met aanpassingen afhankelijk van de MCU en scherm)\
+\
+### UPDATE notes:\
+4.T260116: Focus op configuratie 5. Daarvoor is nu OTA via zowel WiFi als internet (middels GitHub) actief. Bij het opstarten wordt automatisch de nieuwste versie geïnstalleerd. Verder zijn er meer icoontjes toegevoegd. Schakelt de binnenverlichting mee met de buiten verlichting (standaard wit, maar bij vaar verlichting rood), is WiFi manager geimplementeerd en wordt de tijd opgehaald via internet.\
+\
+\
+### Toekomst wensen\
+1. Via ESP-now een CYD als afstandsbediening kunnen inzetten
+2. Experimenteren met AI code en deze versie BKOS5 noemen
 
 # EN
 
