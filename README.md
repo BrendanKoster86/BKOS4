@@ -2,14 +2,14 @@ Englisch version below
 
 # NL
 
-## LETOP ! ! ! Deze versie van BKOS is nog lang niet af en zal daarom slechts beperkt functioneren.\
+## LETOP ! ! ! Deze versie van BKOS is nog lang niet af en zal daarom slechts beperkt functioneren.
 \
 Doel van deze nieuwe versie is naast de Raspberry Pi Pico controllers ook de ESP32 als microcontroller te kunnen gebruiken, en ook de CYD (ESP32-2432S028R) of de grotere versies daarvan de ESP32-8048S043C en ESP34-8048S070C\
-\
-De software is nog vrij bassal en draait enkel als stand alone. Functionaliteit dat ik nog moet toevoegen (of bezig ben met toevoegen) zijn:\
-- IO aansturing\
-- SD kaart\
-- WiFi\
+
+De software is nog vrij bassal en draait enkel als stand alone. Functionaliteit dat ik nog moet toevoegen (of bezig ben met toevoegen) zijn:
+- IO aansturing
+- SD kaart
+- WiFi
 
 ## Instructies
 Kies uw Microcontroller met een cijfer bij HARDWARE\
@@ -25,14 +25,14 @@ Kies een orientie bij ORIENTATIE\
 1 = Staand\
 0 = Liggend\
 Liggend werkt nog niet op alle schermen en is ook nu nog met name een uitgerekte versie van staand, maar hier wordt aan gewerkt\
-\
+
 ESP-eSPI  (met aanpassingen afhankelijk van de MCU en scherm)\
-\
-### UPDATE notes:\
+
+### UPDATE notes
 4.T260116: Focus op configuratie 5. Daarvoor is nu OTA via zowel WiFi als internet (middels GitHub) actief. Bij het opstarten wordt automatisch de nieuwste versie geïnstalleerd. Verder zijn er meer icoontjes toegevoegd. Schakelt de binnenverlichting mee met de buiten verlichting (standaard wit, maar bij vaar verlichting rood), is WiFi manager geimplementeerd en wordt de tijd opgehaald via internet.\
 \
 \
-### Toekomst wensen\
+### Toekomst wensen
 1. Via ESP-now een CYD als afstandsbediening kunnen inzetten
 2. Experimenteren met AI code en deze versie BKOS5 noemen
 
