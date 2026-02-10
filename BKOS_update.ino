@@ -17,6 +17,7 @@ void update_center(String actie) {
   }
 }
 
+
 void bouw_update() {
 
   delete[]knoppen_teken_positie;
@@ -33,7 +34,24 @@ void bouw_update() {
   knoppen_tekst_kleur = new uint16_t*[aantal_knoppen];
   knoppen_status = new byte[aantal_knoppen];
 
-  
+  BKOS_GIT_ALLOWED = fetchAlowedVersions();
+  String deler = "\n";
+  String sonderdeel;
+  char conderdeel[10];
+  int p;
+  while (deler.indexOf(BKOS_GIT_ALLOWED) > 0) {
+    p = deler.indexOf(BKOS_GIT_ALLOWED);
+    sonderdeel = BKOS_GIT_ALLOWED.substring(0, p);
+    sonderdeel.toCharArray(allowed_versions[aantal_knoppen - 2], 10);
+    // allowed_versions[aantal_knoppen - 2] = conderdeel;
+    BKOS_GIT_ALLOWED = BKOS_GIT_ALLOWED.substring(p+1);
+    aantal_knoppen++;
+  }
+  sonderdeel = BKOS_GIT_ALLOWED;
+  sonderdeel.toCharArray(allowed_versions[aantal_knoppen - 2], 10);
+  // allowed_versions[aantal_knoppen-2] = conderdeel;
+  aantal_knoppen++;
+
   for (int i  = 0 ; i < aantal_knoppen ; i++) {
     knoppen_positie[i] = update_knoppen_positie[i];
     knoppen_teken_positie[i] = update_knoppen_positie[i];
@@ -42,6 +60,8 @@ void bouw_update() {
       knoppen_tekst[i] = "BKOS 4";      
     } else if (i == 1) {
       knoppen_tekst[i] = "BKOS 5";      
+    } else {
+      knoppen_tekst[i] = allowed_versions[i - 2];
     }
     knoppen_status[i] = 0;
     knoppen_basiskleur[i] = schakelscherm_knoppen_kleur;
@@ -68,6 +88,14 @@ void bouw_update() {
   tft.println("   Klik om naar de gewenste versie te gaan:");
 
   alle_knoppen_plaatsen();
+
+  tft.println("");
+  tft.println("   Allowed versions:");
+  tft.println(BKOS_GIT_ALLOWED);
+  tft.print("   ");
+  tft.print("'");
+  tft.print(aantal_knoppen);
+  tft.print("' knoppen gevonden");
 
   // // bouw_io_instellingen(0);
   // header_plaatsen("Instellingen");
