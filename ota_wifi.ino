@@ -2,8 +2,11 @@ void ota_wifi_update() {
   ArduinoOTA.handle();
 }
 
+void ota_wifi_setup(){
+  ota_wifi_setup(true);
+}
 
-void ota_wifi_setup() {
+void ota_wifi_setup(bool displayed) {
   
   while (WiFi.waitForConnectResult() != WL_CONNECTED) {
     tft.println("Connection Failed! Rebooting...");
@@ -58,8 +61,10 @@ void ota_wifi_setup() {
 
   ArduinoOTA.begin();
 
-  tft.println("OTA Initialized");
-  tft.print("IP address: ");
-  tft.println(WiFi.localIP());
+  if (displayed) {
+    tft.println("OTA Initialized");
+    tft.print("IP address: ");
+    tft.println(WiFi.localIP());
+  }
 
 }

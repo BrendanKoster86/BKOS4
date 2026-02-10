@@ -56,7 +56,6 @@ void setup() {
 
   scherm_touched = millis();
 
-  ota_setup();
 
 #if use_freeRTOS == 1
   tft.println("");
@@ -79,10 +78,15 @@ void setup() {
     NULL,
     1);
   
+  #else
+    ota_setup(true);
+
+  #endif
+  
   tft.println("done");
   tft.println("exit setup");
   
-#endif
+
 }
 
 
@@ -108,6 +112,7 @@ void ioLoop(){
 }
 
 void guiLoop(){
+  
   if (!updaten) {
     if (scherm_actief) {
       ts_begin();
@@ -146,7 +151,7 @@ void guiLoop(){
         delay(250);
         ts_begin();
         scherm_touched = millis();
-        actieve_touch - false;
+        actieve_touch = false;
       }
     }
   }
@@ -156,6 +161,7 @@ void guiLoop(){
 #if use_freeRTOS == 1
 
 void ioTask(void* parameters){
+  
   for (;;) {
     ioLoop();
     delay(50);
@@ -163,6 +169,7 @@ void ioTask(void* parameters){
 }
 
 void wifiTask(void* parameters){
+  ota_setup(false);
   for (;;) {
     wifiLoop();
     delay(50);

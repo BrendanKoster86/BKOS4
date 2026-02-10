@@ -9,6 +9,6 @@ void tft_setup(){
   tft.setRotation(ROTATIE);
   
   digitalWrite(TFT_BL, HIGH);
-  delay(500);
+  delay(50);
 }
 

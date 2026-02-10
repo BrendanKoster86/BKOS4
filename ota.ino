@@ -1,11 +1,19 @@
 void ota_setup(){
-  connectToWiFi();
-  ota_git_update();
-  ArduinoOTA.setHostname("BKOS4");
-  ota_wifi_setup();
+  ota_setup(false);
 }
 
-void connectToWiFi() {
+void ota_setup(bool displayed){
+  connectToWiFi(displayed);
+  ota_git_update();
+  ArduinoOTA.setHostname("BKOS4");
+  ota_wifi_setup(displayed);
+}
+
+void connectToWiFi(){
+  connectToWiFi(false);
+}
+
+void connectToWiFi(bool displayed) {
   
   WiFi.mode(WIFI_STA);
   
@@ -20,7 +28,9 @@ void connectToWiFi() {
   // WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
-    tft.print(".");
+    if (displayed){
+      tft.print(".");
+    }
   }
   wifi__verbonden = true;
   // tft.println("\nWiFi connected");

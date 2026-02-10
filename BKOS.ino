@@ -1,7 +1,7 @@
 // #if ORIENTATIE == 1
 void BKOS_boot(){
   digitalWrite(TFT_BL, HIGH);
-  delay(1000);
+  // delay(1000);
   bkos_logo(scherm_x(120) - 100, 10, kleur_donker);
   tft.setCursor(scherm_x(120) - 95, 95);
   tft.setTextSize(8);
@@ -91,7 +91,7 @@ void BKOS_boot(){
   tft.println("");
   // io_detect();
   // sd_lees();
-  delay(1000); // Kleine vertraging waarin het opstartschemr blijft staan, wel zo mooi
+  // delay(1000); // Kleine vertraging waarin het opstartschemr blijft staan, wel zo mooi
   ts_setup();
 }
 // #elif ORIENTATIE == 0

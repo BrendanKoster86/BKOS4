@@ -27,13 +27,13 @@ void ota_git_update() {
     tft.println(BKOS_VERSIE_GIT);
     downloadAndApplyFirmware();
   } else {
-    tft.setTextColor(kleur_actief_groen);
-    tft.println("BKOS4 versie is actueel:");
-    tft.setTextSize(3);
-    tft.println(BKOS_VERSIE_GIT);
-    tft.setTextSize(1);
-    tft.setTextColor(kleur_wit);
-    delay(3000);
+    // tft.setTextColor(kleur_actief_groen);
+    // tft.println("BKOS4 versie is actueel:");
+    // tft.setTextSize(3);
+    // tft.println(BKOS_VERSIE_GIT);
+    // tft.setTextSize(1);
+    // tft.setTextColor(kleur_wit);
+    // delay(3000);
   }
 }
 
@@ -201,4 +201,4 @@ bool startOTAUpdate(WiFiClient* client, int contentLength) {
 
   tft.println("Update geslaagd");
   return true;
-}
+}

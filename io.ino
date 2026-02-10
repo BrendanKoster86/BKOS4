@@ -213,7 +213,7 @@ String io_code_naar_naam(byte code){
 
       }
       tft.print("  ");
-      delay(2500);
+      delay(100);
     }
   }
 

@@ -31,44 +31,11 @@ void wifimanager(bool forceConfig) {
   }
 
   WiFi.mode(WIFI_STA);
-  tft.fillScreen(kleur_zwart);
-  
-  tft.setCursor(0,0);
-  tft.setTextColor(kleur_wit);
-  tft.setTextSize(2);
-  bkos_logo(scherm_x(240) - 210, 10, kleur_donker);
-  tft.println("    Verbinden met WiFi . . .");
-  tft.println("    Ga met je telefoon naar het netwerk");
-  tft.setTextSize(3);
-  tft.setTextColor(kleur_beige);
-  tft.println("               BKOS4");
-  tft.setTextSize(2);
-  tft.setTextColor(kleur_wit);
-  tft.println("    Ga vervolgens naar het volgende IP adres:");
-  tft.setTextSize(3);
-  tft.setTextColor(kleur_beige);
-  tft.println("            192.168.4.1");
-  tft.setTextSize(2);
-  tft.setTextColor(kleur_wit);
-  tft.println("    om de juiste instellingen in te voeren");
-  tft.println("");
-  tft.setTextSize(3);
-  tft.println("            LETOP ! ! !");
-  tft.setTextColor(kleur_actief_rood);
-  tft.setTextSize(2);
-  tft.println("    Geef altijd de WiFi gegevens opnieuw op!");
-  tft.setTextColor(kleur_wit);  
-  tft.println("    anders gaat WiFi managr helaas niet verder.");
-  
+
   loadConfigFile();
-  
   WiFiManager wm;
-
   wm.setDebugOutput(false);
-  // wm.resetSettings();
-
   wm.setSaveConfigCallback(saveConfigCallback);
-
   wm.setAPCallback(configModeCallback);
 
   WiFiManagerParameter veld_bootnaam("bootnaam", "Naam boot", bootnaam, 25);
@@ -81,9 +48,42 @@ void wifimanager(bool forceConfig) {
   wm.addParameter(&veld_eigenaar);
   wm.addParameter(&veld_telefoon);
 
+
+
+  
+  
   wifi__aangesloten = true;
 
   if (forceConfig) {
+      tft.fillScreen(kleur_zwart);
+  
+    tft.setCursor(0,0);
+    tft.setTextColor(kleur_wit);
+    tft.setTextSize(2);
+    bkos_logo(scherm_x(240) - 210, 10, kleur_donker);
+    tft.println("    Verbinden met WiFi . . .");
+    tft.println("    Ga met je telefoon naar het netwerk");
+    tft.setTextSize(3);
+    tft.setTextColor(kleur_beige);
+    tft.println("               BKOS4");
+    tft.setTextSize(2);
+    tft.setTextColor(kleur_wit);
+    tft.println("    Ga vervolgens naar het volgende IP adres:");
+    tft.setTextSize(3);
+    tft.setTextColor(kleur_beige);
+    tft.println("            192.168.4.1");
+    tft.setTextSize(2);
+    tft.setTextColor(kleur_wit);
+    tft.println("    om de juiste instellingen in te voeren");
+    tft.println("");
+    tft.setTextSize(3);
+    tft.println("            LETOP ! ! !");
+    tft.setTextColor(kleur_actief_rood);
+    tft.setTextSize(2);
+    tft.println("    Geef altijd de WiFi gegevens opnieuw op!");
+    tft.setTextColor(kleur_wit);  
+    tft.println("    anders gaat WiFi managr helaas niet verder.");
+    
     wm.setConfigPortalTimeout(120);
     if (!wm.startConfigPortal("BKOS4")) {
       tft.println("Verbinding mislukt (startConfigPortal)");

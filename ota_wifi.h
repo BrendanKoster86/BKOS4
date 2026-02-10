@@ -6,3 +6,4 @@
 void ota_wifi_setup();
 
 void ota_wifi_update();
+void ota_wifi_setup(bool displayed);
