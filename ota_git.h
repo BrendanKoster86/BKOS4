@@ -6,6 +6,7 @@ void downloadAndApplyFirmware();
 void downloadAndApplyFirmware(byte BKOS);
 
 String BKOS_VERSIE_GIT = "";
+String BKOS_GIT_ALLOWED = "";
 bool update_ready;
 
 

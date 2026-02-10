@@ -53,18 +53,50 @@ bool checkForFirmwareUpdate() {
 
   // Step 1: Fetch the latest version from GitHub
   BKOS_VERSIE_GIT = fetchLatestVersion();
+  BKOS_GIT_ALLOWED = fetchAlowedVersions();
   if (BKOS_VERSIE_GIT == "") {
     return false;
   }
 
   // Step 2: Compare versions
-  if (BKOS_VERSIE_GIT != BKOS_VERSIE) {
-    tft.print(BKOS_VERSIE_GIT);
+  // if (BKOS_VERSIE_GIT != BKOS_VERSIE) {
+  //   tft.print(BKOS_VERSIE_GIT);
+  //   return true;
+  // }
+  String str_BKOS_VERSIE = BKOS_VERSIE;
+  if (BKOS_GIT_ALLOWED == "") {
+    if (BKOS_VERSIE_GIT != BKOS_VERSIE) {
+      tft.print(BKOS_VERSIE_GIT);
+      return true;
+    }
+  }
+  if (not str_BKOS_VERSIE.indexOf(BKOS_GIT_ALLOWED) > 0) {
     return true;
-    // tft.println("New firmware available. Starting OTA update...");
-    // downloadAndApplyFirmware();
   }
   return false;
+}
+
+String fetchAlowedVersions() {
+  HTTPClient http;
+  if (strncmp(BKOS_VERSIE, "4", 1) == 0) {
+    http.begin(aversionUrl);
+  } else if (strncmp(BKOS_VERSIE, "5", 1) == 0) {
+    http.begin(aversion5Url);
+  } else {
+    http.begin(aversionUrl);
+  }
+
+  int httpCode = http.GET();
+  if (httpCode == HTTP_CODE_OK) {
+    String latestVersion = http.getString();
+    latestVersion.trim();  // Remove any extra whitespace
+    http.end();
+    return latestVersion;
+  } else {
+    tft.printf("Failed to fetch version. HTTP code: %d\n", httpCode);
+    http.end();
+    return "";
+  }
 }
 
 String fetchLatestVersion() {
