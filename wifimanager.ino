@@ -30,19 +30,31 @@ void wifimanager(bool forceConfig) {
     forceConfig = true;
   }
 
+  // tft.println("WiFi.mode");
+  // delay(250);
   WiFi.mode(WIFI_STA);
 
+  // tft.println("loadConfigFile");
+  // delay(250);
   loadConfigFile();
+  // tft.println("WiFiManager wm");
+  // delay(100);
   WiFiManager wm;
+  // tft.println("setDebug");
   wm.setDebugOutput(false);
+  // tft.println("setSaveConfigCallback");
   wm.setSaveConfigCallback(saveConfigCallback);
+  // tft.println("setAPCallback");
   wm.setAPCallback(configModeCallback);
 
+  // tft.println("WiFiManagerParameters");
+  // delay(250);
   WiFiManagerParameter veld_bootnaam("bootnaam", "Naam boot", bootnaam, 25);
   WiFiManagerParameter veld_haven("haven", "Naam haven", haven, 25);
   WiFiManagerParameter veld_eigenaar("eigenaar", "Naam eigenaar", eigenaar, 25);
   WiFiManagerParameter veld_telefoon("telefoon", "Telefoonnummer", telefoon, 25);
 
+  tft.println("addParameters");
   wm.addParameter(&veld_bootnaam);
   wm.addParameter(&veld_haven);
   wm.addParameter(&veld_eigenaar);
@@ -93,14 +105,19 @@ void wifimanager(bool forceConfig) {
       wifi__aangesloten = false;
     }
   } else {
+    tft.println("autoConnect");
+    wm.setTimeout(10);
     if (!wm.autoConnect("BKOS4")) {
       tft.println("Verbinding mislukt (autoConnect)");
-      delay(3000);
+      delay(1000);
       wifi__aangesloten = false;
       // ESP.restart();
       // delay(5000);
+    // } else {
+    //   tft.print("continue");
     }
   }
+  // tft.println("strncpy");
 
   strncpy(bootnaam, veld_bootnaam.getValue(), sizeof(bootnaam));
   strncpy(haven, veld_haven.getValue(), sizeof(haven));
@@ -108,8 +125,11 @@ void wifimanager(bool forceConfig) {
   strncpy(telefoon, veld_telefoon.getValue(), sizeof(telefoon));
 
   if (shouldSaveConfig) {
+    tft.println("saceConfigFile");
     saveConfigFile();
   }
+
+  // tft.println("WiFiManager compleet");
 }
 
 void saveConfigFile(){

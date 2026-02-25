@@ -45,12 +45,18 @@ void setup() {
 
   tft_setup();
 
+  tft.fillScreen(kleur_zwart);
+  tft.println("WiFiManager starten...");
   wifimanager();
   
   tft.fillScreen(kleur_zwart);
+  tft.setCursor(0, 10);
+  tft.setTextColor(kleur_wit);
+  tft.println("boot...");
  
   // Note: The Adafruit librarys is not setting the backlight on, so we need to do that in code', flash size: 16mb, PSRAM: OPI PSRAM
   BKOS_boot();
+  tft.println("boot done");
   
   digitalWrite(TFT_BL, HIGH);
 
@@ -69,14 +75,14 @@ void setup() {
     NULL,
     1);
 
-  tft.println("startwifiTask");
-  xTaskCreatePinnedToCore(wifiTask,
-    "WIFI",
-    20480,
-    NULL,
-    1,
-    NULL,
-    1);
+  // tft.println("startwifiTask");
+  // xTaskCreatePinnedToCore(wifiTask,
+  //   "WIFI",
+  //   20480,
+  //   NULL,
+  //   1,
+  //   NULL,
+  //   1);
   
   #else
     ota_setup(true);
