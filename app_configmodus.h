@@ -1,0 +1,1 @@
+void configmodus(String actie);
