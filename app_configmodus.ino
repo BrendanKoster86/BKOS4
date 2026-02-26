@@ -60,7 +60,7 @@ void bouw_configmodus() {
     } else {
       knoppen_status[i] = 0;
     }
-    knoppen_basiskleur[i] = exterieruscherm_knoppen_kleur;
+    knoppen_basiskleur[i] = schakelscherm_knoppen_kleur;
     knoppen_tekst_kleur[i] = schakelscherm_knoppen_tekst_kleur;
     
   }
