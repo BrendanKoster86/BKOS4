@@ -46,12 +46,20 @@ void bouw_configmodus() {
   knoppen_tekst_kleur = new uint16_t*[aantal_knoppen];
   knoppen_status = new byte[aantal_knoppen];
 
+  int huidige_configuratie = EEPROM.read(616);
+
 
   for (int i  = 0 ; i < aantal_knoppen ; i++) {
     knoppen_positie[i] = configmodus_knoppen_positie[i];
     knoppen_teken_positie[i] = configmodus_knoppen_positie[i];
     knoppen_tekst[i] = configmodus_knoppen_namen[i];
-    knoppen_status[i] = exterieurscherm_status[i];
+    if (i+1 == huidige_configuratie) {
+      knoppen_status[i] = 2; //exterieurscherm_status[i];
+    } else if (i == 6) {
+      knoppen_status[i] = 3;
+    } else {
+      knoppen_status[i] = 1;
+    }
     knoppen_basiskleur[i] = exterieruscherm_knoppen_kleur;
     knoppen_tekst_kleur[i] = schakelscherm_knoppen_tekst_kleur;
     
