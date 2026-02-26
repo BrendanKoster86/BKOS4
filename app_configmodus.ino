@@ -54,11 +54,11 @@ void bouw_configmodus() {
     knoppen_teken_positie[i] = configmodus_knoppen_positie[i];
     knoppen_tekst[i] = configmodus_knoppen_namen[i];
     if (i+1 == huidige_configuratie) {
-      knoppen_status[i] = 2; //exterieurscherm_status[i];
+      knoppen_status[i] = 1; //exterieurscherm_status[i];
     } else if (i == 6) {
       knoppen_status[i] = 3;
     } else {
-      knoppen_status[i] = 1;
+      knoppen_status[i] = 0;
     }
     knoppen_basiskleur[i] = exterieruscherm_knoppen_kleur;
     knoppen_tekst_kleur[i] = schakelscherm_knoppen_tekst_kleur;

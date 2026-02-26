@@ -75,14 +75,14 @@ void setup() {
     NULL,
     1);
 
-  // tft.println("startwifiTask");
-  // xTaskCreatePinnedToCore(wifiTask,
-  //   "WIFI",
-  //   20480,
-  //   NULL,
-  //   1,
-  //   NULL,
-  //   1);
+  tft.println("startwifiTask");
+  xTaskCreatePinnedToCore(wifiTask,
+    "WIFI",
+    20480,
+    NULL,
+    1,
+    NULL,
+    1);
   
   #else
     ota_setup(true);
