@@ -29,7 +29,7 @@ void bouw_configmodus() {
   // header_plaatsen("Schakelscherm");
   achtergrond(kleur_licht);
 
-  aantal_knoppen = 7;
+  aantal_knoppen = 8;
   
   delete[]knoppen_positie;
   delete[]knoppen_teken_positie;
@@ -46,17 +46,17 @@ void bouw_configmodus() {
   knoppen_tekst_kleur = new uint16_t*[aantal_knoppen];
   knoppen_status = new byte[aantal_knoppen];
 
-  int huidige_configuratie = EEPROM.read(616);
+  huidige_configuratie = EEPROM.read(16);
 
 
   for (int i  = 0 ; i < aantal_knoppen ; i++) {
     knoppen_positie[i] = configmodus_knoppen_positie[i];
     knoppen_teken_positie[i] = configmodus_knoppen_positie[i];
     knoppen_tekst[i] = configmodus_knoppen_namen[i];
-    if (i+1 == huidige_configuratie) {
+    if (i == huidige_configuratie) {
       knoppen_status[i] = 1; //exterieurscherm_status[i];
-    } else if (i == 6) {
-      knoppen_status[i] = 3;
+    } else if (i == 7) {
+      knoppen_status[i] = 2;
     } else {
       knoppen_status[i] = 0;
     }
@@ -64,14 +64,12 @@ void bouw_configmodus() {
     knoppen_tekst_kleur[i] = schakelscherm_knoppen_tekst_kleur;
     
   }
-  
-
   alle_knoppen_plaatsen();
 
-  
-  exterieur_teken_boot(ext_x, ext_y, kleur_groen);
-  exterieur_symbolen_verlichting(ext_x, ext_y);
-  interieur_verlichting();
+  tft.setCursor(200, 200);
+  tft.setTextSize(4);
+  tft.println(huidige_configuratie);
+
 }
 
 // void exterieur_teken_boot(int32_t x, int32_t y, uint32_t kleur){
@@ -194,9 +192,27 @@ void run_configmodus() {
     druk = klik(ts_x, ts_y);
 
     if (druk > -1){
-      exterieurscherm_schakel(druk);
-      knop_plaatsen(druk);
-      io_wijziging = true;
+      if (druk < 7) {
+        knoppen_status[huidige_configuratie] = 0;
+        knop_plaatsen(huidige_configuratie);
+        huidige_configuratie = druk;
+        knoppen_status[druk] = 1;
+        knop_plaatsen(druk);
+      } else if (druk == 7) {
+        if (huidige_configuratie != EEPROM.read(16)){
+          tft.fillScreen(kleur_zwart);
+          tft.setCursor(200, 200);
+          tft.setTextSize(5);
+          tft.setTextColor(kleur_wit);
+          tft.print(EEPROM.read(16));
+          tft.print(" > ");
+          tft.print(huidige_configuratie);
+          delay(1000);
+          EEPROM.write(16, huidige_configuratie);
+          delay(2000);
+          ESP.restart();
+        }
+      }
     }
 
     while (ts_touched()) {
@@ -210,10 +226,10 @@ void run_configmodus() {
       klik_header(ts_x, ts_y);
     }
   }
-  if (io_runned) {
-    io_runned = false;
-    exterieur_symbolen_verlichting(ext_x, ext_y);
-  }
+  // if (io_runned) {
+  //   io_runned = false;
+  //   exterieur_symbolen_verlichting(ext_x, ext_y);
+  // }
   
   ts_begin(); 
 }

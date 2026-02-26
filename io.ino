@@ -2,33 +2,33 @@ void io_boot() {
   io_setup();  // Setup specifiek voor de computer
   io_detect(); // Detecteren hardware op basis van de computer
   bool done = false;
-  if (aparaten_cnt == 1) {
-    if (aparaten[0] == 130){
-      // Uitgaande van de basis test configuratie
-      tft.println("1 module configuratie'(2)");
-      io_set_defaults(2);
-      done = true;
-    }
-  } else if (aparaten_cnt == 2) {
-    if ((aparaten[0] == 130) && (aparaten[1] == 254)){
-      // Uitgaande van de basis test configuratie
-      tft.println("1 module configuratie'(2)");
-      io_set_defaults(2);
-      done = true;
-    } else if ((aparaten[0] == 130) && (aparaten[1] == 130)){
-      // Uitgaande van de basis 2 module test configuratie
-      tft.println("2 module configuratie'(3)");
-      io_set_defaults(3);
-      done = true;
-    }
-  } else if (aparaten_cnt == 3) {
-    if ((aparaten[0] == 130) && (aparaten[1] == 130) && (aparaten[2] == 130)){
-      // Configuratie Glory
-      tft.println("Configuratie voor de Glory (1)");
-      io_set_defaults(1);
-      done = true;
-    }
-  }
+  // if (aparaten_cnt == 1) {
+  //   if (aparaten[0] == 130){
+  //     // Uitgaande van de basis test configuratie
+  //     tft.println("1 module configuratie'(2)");
+  //     io_set_defaults(2);
+  //     done = true;
+  //   }
+  // } else if (aparaten_cnt == 2) {
+  //   if ((aparaten[0] == 130) && (aparaten[1] == 254)){
+  //     // Uitgaande van de basis test configuratie
+  //     tft.println("1 module configuratie'(2)");
+  //     io_set_defaults(2);
+  //     done = true;
+  //   } else if ((aparaten[0] == 130) && (aparaten[1] == 130)){
+  //     // Uitgaande van de basis 2 module test configuratie
+  //     tft.println("2 module configuratie'(3)");
+  //     io_set_defaults(3);
+  //     done = true;
+  //   }
+  // } else if (aparaten_cnt == 3) {
+  //   if ((aparaten[0] == 130) && (aparaten[1] == 130) && (aparaten[2] == 130)){
+  //     // Configuratie Glory
+  //     tft.println("Configuratie voor de Glory (1)");
+  //     io_set_defaults(1);
+  //     done = true;
+  //   }
+  // }
   if (!done) {
     tft.println("Geen configuratie gevonden.");
     io_set_defaults();
@@ -494,7 +494,7 @@ int io_output_status(byte output) {
 
 void io_set_defaults(){
   // io_set_defaults(2);
-  io_set_defaults(EEPROM.read(616));
+  io_set_defaults(EEPROM.read(16));
   
 }
 
@@ -513,7 +513,7 @@ void io_set_defaults(int standaard){
    6: demo
    */
 
-  //  int standaard = 2;//EEPROM.read(616);
+  //  int standaard = 2;//EEPROM.read(16);
    tft.print("IO_standaard: ");
    tft.print(' ');
    tft.println(standaard);
@@ -530,7 +530,7 @@ void io_set_defaults(int standaard){
    } else if (standaard == 6){
     io_set_6();
    } else {
-    EEPROM.write(616, 2);
+    EEPROM.write(16, 2);
     tft.println("Poging dit voor volgende keer op 1 te zetten");
     io_set_2();
     delay(500);
