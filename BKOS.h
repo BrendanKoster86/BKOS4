@@ -16,6 +16,7 @@ String BKOSSV;
 void BKOS_boot();
 
 
+// String boot_configuratie = "1";
 
   
 

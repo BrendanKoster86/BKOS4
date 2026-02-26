@@ -493,8 +493,8 @@ int io_output_status(byte output) {
 
 
 void io_set_defaults(){
-  io_set_defaults(2);
-  // io_set_defaults(EEPROM.read(616));
+  // io_set_defaults(2);
+  io_set_defaults(EEPROM.read(616));
   
 }
 

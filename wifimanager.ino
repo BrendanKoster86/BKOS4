@@ -53,12 +53,14 @@ void wifimanager(bool forceConfig) {
   WiFiManagerParameter veld_haven("haven", "Naam haven", haven, 25);
   WiFiManagerParameter veld_eigenaar("eigenaar", "Naam eigenaar", eigenaar, 25);
   WiFiManagerParameter veld_telefoon("telefoon", "Telefoonnummer", telefoon, 25);
+  // WiFiManagerParameter veld_boot_configuratie("boot_configuratie", "boot configuratie", boot_configuratie, 2);
 
   tft.println("addParameters");
   wm.addParameter(&veld_bootnaam);
   wm.addParameter(&veld_haven);
   wm.addParameter(&veld_eigenaar);
   wm.addParameter(&veld_telefoon);
+  // wm.addParameter(&veld_boot_configuratie);
 
 
 
@@ -123,6 +125,9 @@ void wifimanager(bool forceConfig) {
   strncpy(haven, veld_haven.getValue(), sizeof(haven));
   strncpy(eigenaar, veld_eigenaar.getValue(), sizeof(eigenaar));
   strncpy(telefoon, veld_telefoon.getValue(), sizeof(telefoon));
+  // strncpy(boot_configuratie, veld_boot_configuratie.getValue(), sizeof(boot_configuratie));
+
+
 
   if (shouldSaveConfig) {
     tft.println("saceConfigFile");
@@ -138,6 +143,7 @@ void saveConfigFile(){
   json["haven"] = haven;
   json["eigenaar"] = eigenaar;
   json["telefoon"] = telefoon;
+  // json["boot_configuratie"] = boot_configuratie;
 
   File configFile = SPIFFS.open(JSON_CONFIG_FILE, "w");
 
@@ -165,6 +171,7 @@ bool loadConfigFile() {
           strcpy(haven, json["haven"]);
           strcpy(eigenaar, json["eigenaar"]);
           strcpy(telefoon, json["telefoon"]);
+          // strcpy(tmp_boot_configuratie, json["boot_configuratie"]);
           return true;
         }
       }
