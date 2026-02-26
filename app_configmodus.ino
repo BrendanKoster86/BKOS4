@@ -29,7 +29,7 @@ void bouw_configmodus() {
   // header_plaatsen("Schakelscherm");
   achtergrond(kleur_licht);
 
-  aantal_knoppen = exterieur_knoppen_cnt;
+  aantal_knoppen = 7;
   
   delete[]knoppen_positie;
   delete[]knoppen_teken_positie;
@@ -48,9 +48,9 @@ void bouw_configmodus() {
 
 
   for (int i  = 0 ; i < aantal_knoppen ; i++) {
-    knoppen_positie[i] = exterieurscherm_knoppen_positie[i];
-    knoppen_teken_positie[i] = exterieurscherm_knoppen_positie[i];
-    knoppen_tekst[i] = exterieur_knoppen_namen[i];
+    knoppen_positie[i] = configmodus_knoppen_positie[i];
+    knoppen_teken_positie[i] = configmodus_knoppen_positie[i];
+    knoppen_tekst[i] = configmodus_knoppen_namen[i];
     knoppen_status[i] = exterieurscherm_status[i];
     knoppen_basiskleur[i] = exterieruscherm_knoppen_kleur;
     knoppen_tekst_kleur[i] = schakelscherm_knoppen_tekst_kleur;
