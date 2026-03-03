@@ -26,7 +26,7 @@ void bouw_update() {
   delete[]knoppen_tekst;
   delete[]knoppen_tekst_kleur;
   
-  aantal_knoppen = 2;
+  aantal_knoppen = 3;
   knoppen_positie = new int*[aantal_knoppen];
   knoppen_teken_positie = new int*[aantal_knoppen];
   knoppen_tekst = new char*[aantal_knoppen];
@@ -60,6 +60,8 @@ void bouw_update() {
       knoppen_tekst[i] = "BKOS 4";      
     } else if (i == 1) {
       knoppen_tekst[i] = "BKOS 5";      
+    } else if (i == 2) {
+      knoppen_tekst[i] = "BKOS 5a";      
     } else {
       knoppen_tekst[i] = allowed_versions[i - 2];
     }
@@ -138,6 +140,23 @@ void run_update() {
       delay(3000);
       actieve_app = 2;
       scherm_bouwen = true;
+    } else if (druk == 2) {
+      // Installeren BKOS 5a (technisch even 6 omdat het een getal moet zijn)
+      // Eerst de scherm opmaak even doen en daarna de installatie starten voor BKOS 5a
+      updaten = true;
+      delay(250);
+      tft.fillScreen(kleur_zwart);
+      bkos_logo(10, 10, kleur_donker);
+      tft.setCursor(300, 10);
+      tft.setTextSize(3);
+      tft.setTextColor(kleur_groen);
+      tft.println("BKOS update");
+      tft.setTextColor(kleur_beige);
+      tft.setCursor(300, 45);
+      tft.print(BKOS_VERSIE);
+      tft.print(" > ");
+      tft.println(BKOS_VERSIE_GIT);
+      downloadAndApplyFirmware(6);
     }
 
     if (ts_y >= home_knop[1]) {

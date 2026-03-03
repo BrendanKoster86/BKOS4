@@ -9,7 +9,7 @@
 #include "apps.h"
 #include "info.h"
 
-#define BKOS_VERSIE "4.T260226"
+#define BKOS_VERSIE "4.T260303"
 String BKOSS;
 String BKOSSV;
 
@@ -31,6 +31,9 @@ unsigned int klok_getekend = 0;
   const char* firmware5Url = "https://raw.githubusercontent.com/BrendanKoster86/BKOS5/main/build/esp32.esp32.esp32s3/BKOS5.ino.bin";
   const char* version5Url = "https://raw.githubusercontent.com/BrendanKoster86/BKOS5/main/firmware/versie5.txt";
   const char* aversion5Url = "https://raw.githubusercontent.com/BrendanKoster86/BKOS5/main/firmware/alowed5.txt";
+  const char* firmware5aUrl = "https://raw.githubusercontent.com/brennyc86/BKOS5a/main/build/esp32.esp32.esp32s3/BKOS5a.ino.bin";
+  const char* version5aUrl = "https://raw.githubusercontent.com/brennyc86/BKOS5a/main/firmware/versie5a.txt";
+  const char* aversion5aUrl = "https://raw.githubusercontent.com/brennyc86/BKOS5a/main/firmware/alowed5a.txt";
   
 #else
   const char* firmwareUrl = "https://github.com/BrendanKoster86/BKOS4/blob/main/firmware/firmware.ino.bin";

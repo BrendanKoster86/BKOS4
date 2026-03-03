@@ -1,6 +1,6 @@
 void update_center(String actie);
 
-int update_knoppen_positie[10][4] = {{10,150,65,25}, {80,150,65,25},
+int update_knoppen_positie[10][4] = {{10,150,65,25}, {80,150,65,25}, {150,150,65,25},
                                      {10,180,65,25},
                                      {10,210,65,25},
                                      {10,240,65,25},

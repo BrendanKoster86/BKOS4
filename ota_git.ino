@@ -139,6 +139,8 @@ void downloadAndApplyFirmware(byte BKOS) {
     http.begin(firmwareUrl);
   } if (BKOS == 5) {
     http.begin(firmware5Url);
+  } if (BKOS == 6) {
+    http.begin(firmware5aUrl);
   } else {
     http.begin(firmwareUrl);
   }
