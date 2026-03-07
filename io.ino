@@ -599,7 +599,7 @@ void io_set_1(){
     } else if (nr == 13){
       io_knoppen[3] = nr;
       io_objecten[nr] = 3;
-      io_namen[nr] = "**L_hek";
+      io_namen[nr] = "**L_hek  ";
     } else if (nr == 16){
       io_knoppen[4] = nr;
       io_objecten[nr] = 3;

@@ -526,9 +526,9 @@ void interieur_verlichting(bool schakelen) {
   }
 
   for (int knop = 0; knop < io_knoppen_cnt; knop++){
-    if (io_namen[io_knoppen[knop]] == "**IL_wit "){
+    if (charstrip(io_namen[io_knoppen[knop]]) == "**IL_wit"){
       io_output[io_knoppen[knop]] = wit;
-    } else if (io_namen[io_knoppen[knop]] == "**IL_rood"){
+    } else if (charstrip(io_namen[io_knoppen[knop]]) == "**IL_rood"){
       io_output[io_knoppen[knop]] = rood;
     }
   }
