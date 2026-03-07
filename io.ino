@@ -493,7 +493,7 @@ int io_output_status(byte output) {
 
 
 void io_set_defaults(){
-  // io_set_defaults(2);
+  // io_set_defaults(1);
   io_set_defaults(EEPROM.read(16));
   
 }
@@ -530,9 +530,9 @@ void io_set_defaults(int standaard){
    } else if (standaard == 6){
     io_set_6();
    } else {
-    EEPROM.write(16, 2);
+    EEPROM.write(16, 1);
     tft.println("Poging dit voor volgende keer op 1 te zetten");
-    io_set_2();
+    io_set_1();
     delay(500);
    }
 }
@@ -596,7 +596,7 @@ void io_set_1(){
       io_namen[nr] = "**USB    ";
     } else if (nr == 1) {
       io_namen[nr] = "**230    ";
-    } else if (nr == 14){
+    } else if (nr == 13){
       io_knoppen[3] = nr;
       io_objecten[nr] = 3;
       io_namen[nr] = "**L_hek";
