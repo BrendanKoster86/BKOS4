@@ -525,12 +525,19 @@ void interieur_verlichting(bool schakelen) {
     }
   }
 
+  String label;
+
   for (int knop = 0; knop < io_knoppen_cnt; knop++){
-    if (charstrip(io_namen[io_knoppen[knop]]) == "**IL_wit"){
+    label = charstrip(io_namen[io_knoppen[knop]]);
+    if (label == "**IL_wit"){
       io_output[io_knoppen[knop]] = wit;
-    } else if (charstrip(io_namen[io_knoppen[knop]]) == "**IL_rood"){
+    } else if (label == "**IL_rood"){
       io_output[io_knoppen[knop]] = rood;
     }
+  }
+  if (EEPROM.read(16) == 1) {
+    io_output[19] = wit;
+    io_output[21] = rood;
   }
 }
 

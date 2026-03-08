@@ -550,7 +550,7 @@ void io_set_1(){
   delete[]io_events;
   
   int cnt = 24;
-  io_knoppen_cnt = 11;
+  io_knoppen_cnt = 12;
   io_cnt = cnt;
   io_objecten = new byte[cnt];
   io_object_ruimte = new byte[cnt];
@@ -596,6 +596,8 @@ void io_set_1(){
       io_namen[nr] = "**USB    ";
     } else if (nr == 1) {
       io_namen[nr] = "**230    ";
+    } else if (nr == 2) {
+      io_namen[nr] = "**  ?  **";
     } else if (nr == 13){
       io_knoppen[3] = nr;
       io_objecten[nr] = 3;
@@ -613,22 +615,23 @@ void io_set_1(){
       io_objecten[nr] = 3;
       io_namen[nr] = "**L_3kl  ";
     } else if (nr == 19){
-      // io_objecten[nr] = 3;
+      io_knoppen[7] = nr;
+      io_objecten[nr] = 3;
       io_namen[nr] = "**IL_wit ";
     } else if (nr == 20){
-      io_knoppen[7] = nr;
+      io_knoppen[8] = nr;
       io_objecten[nr] = 3;
       io_namen[nr] = "**E_dek  ";
     } else if (nr == 21){
-      io_knoppen[8] = nr;
+      io_knoppen[9] = nr;
       io_objecten[nr] = 3;
       io_namen[nr] = "**IL_rood";
     } else if (nr == 22){
-      io_knoppen[9] = nr;
+      io_knoppen[10] = nr;
       io_objecten[nr] = 3;
       io_namen[nr] = "**L_stoom";
     } else if (nr == 23){
-      io_knoppen[10] = nr;
+      io_knoppen[11] = nr;
       io_objecten[nr] = 3;
       io_namen[nr] = "**tv     ";
     }
