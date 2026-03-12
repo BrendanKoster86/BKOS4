@@ -7,6 +7,7 @@ char bootnaam[25] = "bootnaam";
 char haven[25]    = "haven";
 char eigenaar[25] = "eigenaar";
 char telefoon[25] = "telefoon";
+char io_config[2] = "1";
 
 
 // Selectie gebruikte hardware (tzt kijken of dit automatisch kan)

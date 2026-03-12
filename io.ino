@@ -493,12 +493,12 @@ int io_output_status(byte output) {
 
 
 void io_set_defaults(){
-  // io_set_defaults(1);
-  io_set_defaults(EEPROM.read(16));
+  io_set_defaults(io_config[0]);
+  // io_set_defaults(EEPROM.read(16));
   
 }
 
-void io_set_defaults(int standaard){
+void io_set_defaults(char standaard){
   /* Ik wil een aantal standaarden maken om de module voor het werken met de SD kaart toch flexiebel te maken in de testfase
    * Mijn streven is om op adres 616 van de EEPROM een cijfer op te slaan die refereert aan de gebruikte standaard
    * De standaarden die ik wil inbouwen zijn:
@@ -517,23 +517,20 @@ void io_set_defaults(int standaard){
    tft.print("IO_standaard: ");
    tft.print(' ');
    tft.println(standaard);
-   if (standaard == 1){
+   if (standaard == '1'){
     io_set_1();
-   } else if (standaard == 2){
+   } else if (standaard == '2'){
     io_set_2();
-   } else if (standaard == 3){
+   } else if (standaard == '3'){
     io_set_3();
-   } else if (standaard == 4){
+   } else if (standaard == '4'){
     io_set_4();
-   } else if (standaard == 5){
+   } else if (standaard == '5'){
     io_set_5();
-   } else if (standaard == 6){
+   } else if (standaard == '6'){
     io_set_6();
    } else {
-    EEPROM.write(16, 1);
-    tft.println("Poging dit voor volgende keer op 1 te zetten");
     io_set_1();
-    delay(500);
    }
 }
 
