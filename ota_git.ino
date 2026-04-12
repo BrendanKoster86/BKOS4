@@ -37,11 +37,6 @@ void ota_git_update() {
   }
 }
 
-// void loop() {
-//   tft.println("Current Firmware Version: " + String(BKOS_VERSIE));
-//   delay(3000);  // delay to prevent flooding serial
-// }
-
 
 
 bool checkForFirmwareUpdate() {
@@ -200,9 +195,11 @@ bool startOTAUpdate(WiFiClient* client, int contentLength) {
         // Calculate and print progress
         progress = (written * 100) / contentLength;
         if (progress != lastProgress) {
-          tft.fillRect(300, 120, 200, 200, kleur_zwart);
+          tft.fillRect(300, 120, 200, 40, kleur_zwart);
           tft.setCursor(350, 125);
           tft.printf("%d%%\n", progress);
+          tft.fillRect(100, 160, 600*progress, 40, kleur_licht);
+          tft.drawRect(100, 160, 600, 40, kleur_donker);
           lastProgress = progress;
         }
       }

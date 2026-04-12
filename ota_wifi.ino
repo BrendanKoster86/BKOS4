@@ -44,9 +44,11 @@ void ota_wifi_setup(bool displayed) {
     .onProgress([](unsigned int progress, unsigned int total) {
       // actProgress = "%u%%\r", (progress / (total / 100));
       if (true){//(actProgress != lastProgress) {
-          tft.fillRect(300, 120, 200, 200, kleur_zwart);
+          tft.fillRect(300, 120, 200, 40, kleur_zwart);
           tft.setCursor(350, 125);
           tft.printf("%u%%\r", (progress / (total / 100)));
+          tft.fillRect(100, 160, 6*total, 40, kleur_licht);
+          tft.drawRect(100, 160, 600, 40, kleur_donker);
           // lastProgress = actProgress;
         }
     })
